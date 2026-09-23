@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>НАМОТКА — портал намотчика электродвигателей</title>
+<meta name="description" content="Личный портал намотчика: справочник обмоточных данных АИР, калькуляторы перемотки, схемы обмоток и соединений.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Russo+One&display=swap');
+:root{
+  --bg:#0f0d0a; --bg2:#161210; --card:#1c1712; --card2:#221b15;
+  --border:#2f2820; --border2:#3d3327;
+  --text:#ece3d6; --muted:#a3937f; --dim:#6f6252;
+  --accent:#e08a3c; --accent2:#f2b56b; --accent-dim:rgba(224,138,60,.14);
+  --ok:#58b368; --warn:#e0b13c; --danger:#e05c4a; --blue:#5aa7d6; --violet:#a98ce0;
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.55;min-height:100vh}
+h1,h2,h3,.logo{font-family:'Russo One','Inter',sans-serif;font-weight:400;letter-spacing:.02em}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:#1a1006}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:100;background:rgba(15,13,10,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.hwrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-size:22px;color:var(--text);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.logo .bolt{color:var(--accent);font-size:24px}
+.logo b{color:var(--accent)}
+.logo small{display:block;font-family:'Inter';font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+nav button{background:none;border:none;color:var(--muted);font:600 14px 'Inter';padding:9px 13px;border-radius:9px;cursor:pointer;transition:.15s}
+nav button:hover{color:var(--text);background:var(--card2)}
+nav button.active{color:var(--accent2);background:var(--accent-dim)}
+
+/* ---------- layout ---------- */
+main{max-width:1200px;margin:0 auto;padding:22px 16px 60px}
+section.tab{display:none;animation:fadeIn .25s ease}
+section.tab.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.card{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.card h3{color:var(--accent2);font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card p{color:var(--muted);font-size:14px}
+.section-title{font-size:24px;margin:6px 0 4px;color:var(--text)}
+.section-sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+.hint{font-size:12.5px;color:var(--dim);margin-top:8px;line-height:1.5}
+.warn-note{background:rgba(224,177,60,.08);border:1px solid rgba(224,177,60,.35);color:#e8cf90;border-radius:10px;padding:10px 14px;font-size:13px;margin:10px 0}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;letter-spacing:.03em}
+
+/* ---------- hero ---------- */
+.hero{position:relative;border:1px solid var(--border);border-radius:16px;overflow:hidden;padding:52px 30px 46px;margin-bottom:20px;background:
+ radial-gradient(600px 300px at 85% -20%,rgba(224,138,60,.22),transparent 60%),
+ radial-gradient(500px 260px at 0% 110%,rgba(90,167,214,.10),transparent 60%),
+ linear-gradient(160deg,#1d1610,#12100d)}
+.hero h1{font-size:clamp(26px,5vw,44px);line-height:1.15}
+.hero h1 span{color:var(--accent)}
+.hero .tagline{color:var(--accent2);font-family:'Russo One';font-size:clamp(13px,2.2vw,17px);letter-spacing:.14em;text-transform:uppercase;margin:14px 0 8px}
+.hero p.lead{color:var(--muted);max-width:640px;font-size:15px}
+.coil{position:absolute;right:-40px;top:-40px;opacity:.16;pointer-events:none}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px}
+.tile{cursor:pointer;border:1px solid var(--border);border-radius:12px;padding:18px 16px;background:linear-gradient(160deg,var(--card),var(--bg2));transition:.18s}
+.tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tile .ico{font-size:26px}
+.tile h4{margin:8px 0 4px;font-size:15px}
+.tile p{font-size:12.5px;color:var(--muted)}
+
+/* ---------- pills / subtabs ---------- */
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 16px}
+.pills button{background:var(--card);border:1px solid var(--border);color:var(--muted);font:600 13px 'Inter';padding:7px 14px;border-radius:20px;cursor:pointer;transition:.15s}
+.pills button:hover{color:var(--text);border-color:var(--border2)}
+.pills button.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent2)}
+.subtab{display:none}
+.subtab.active{display:block;animation:fadeIn .2s ease}
+
+/* ---------- tables ---------- */
+.tblwrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--bg2)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th{background:var(--card2);color:var(--accent2);text-align:left;padding:9px 12px;font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;position:sticky;top:0}
+td{padding:8px 12px;border-top:1px solid var(--border);white-space:nowrap}
+tbody tr:hover{background:rgba(224,138,60,.05)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.search{width:100%;max-width:340px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 13px;font:500 14px 'Inter';margin-bottom:12px}
+.search:focus{outline:none;border-color:var(--accent)}
+
+/* ---------- forms / calculators ---------- */
+label.f{display:block;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 4px}
+input[type=text],input[type=number],input[type=date],input[type=tel],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 12px;font:500 14.5px 'Inter'}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:64px}
+.row{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.btn{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(160deg,var(--accent),#c9752c);color:#1a1006;border:none;border-radius:9px;padding:10px 18px;font:700 14px 'Inter';cursor:pointer;transition:.15s;margin-top:12px}
+.btn:hover{filter:brightness(1.1)}
+.btn.sec{background:var(--card2);color:var(--text);border:1px solid var(--border2)}
+.btn.sm{padding:6px 12px;font-size:12.5px;margin-top:0}
+.btn.danger{background:none;border:1px solid var(--danger);color:var(--danger)}
+.result{margin-top:14px;background:rgba(88,179,104,.07);border:1px solid rgba(88,179,104,.3);border-radius:10px;padding:12px 15px;font-size:14.5px;display:none}
+.result.show{display:block}
+.result b{color:var(--accent2)}
+.result .big{font-size:19px;color:var(--ok);font-weight:800}
+
+/* ---------- schemes ---------- */
+.scheme-box{background:#14110d;border:1px solid var(--border);border-radius:10px;padding:14px;overflow-x:auto;text-align:center}
+.scheme-box svg{max-width:100%;height:auto}
+.legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:8px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.mxt th,.mxt td{padding:4px 7px;font-size:11.5px;text-align:center;white-space:nowrap}
+.mxt tbody td:first-child{font-weight:700;color:var(--accent2)}
+.mx{width:14px;height:14px;border-radius:3px;background:var(--blue);border:none;cursor:pointer;padding:0;vertical-align:middle}
+.mx:hover{background:var(--accent)}
+.mx1{width:12px;height:12px;border-radius:3px;background:var(--muted);display:inline-block;vertical-align:middle}
+#tbl-pass{min-width:0}
+@media(max-width:640px){#tbl-pass th,#tbl-pass td{padding:6px 6px;font-size:11.5px}#tbl-pass th{font-size:9.5px;letter-spacing:0;white-space:normal;min-width:34px}}
+#tbl-pass tbody tr{cursor:pointer}
+#tbl-pass th:first-child,#tbl-pass td:first-child{position:sticky;left:0;z-index:3;background:var(--card2)}
+#tbl-pass td:first-child{background:var(--bg2)}
+#tbl-pass tbody tr:hover td:first-child{background:#1a1512}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin-top:12px}
+.mgrid .mi{border-bottom:1px solid var(--border);padding-bottom:6px}
+.mgrid .ml{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.mgrid .mv{font-size:15px;font-weight:600;margin-top:2px}
+
+/* ---------- orders ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.stat .v{font-size:22px;font-weight:800;color:var(--accent2)}
+.stat .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.order-card{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.order-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.order-num{font-family:'Russo One';color:var(--accent2);font-size:15px}
+.order-title{font-weight:700}
+.order-meta{font-size:13px;color:var(--muted);margin-top:4px}
+.order-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.st{font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.04em}
+.st-new{background:rgba(90,167,214,.15);color:var(--blue);border:1px solid rgba(90,167,214,.4)}
+.st-work{background:rgba(224,177,60,.13);color:var(--warn);border:1px solid rgba(224,177,60,.4)}
+.st-ready{background:rgba(88,179,104,.13);color:var(--ok);border:1px solid rgba(88,179,104,.4)}
+.st-done{background:rgba(163,147,127,.13);color:var(--muted);border:1px solid var(--border2)}
+.st-cancel{background:rgba(224,92,74,.12);color:var(--danger);border:1px solid rgba(224,92,74,.4)}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chipbar button{background:var(--card);border:1px solid var(--border);color:var(--muted);font:600 12.5px 'Inter';padding:6px 12px;border-radius:18px;cursor:pointer}
+.chipbar button.active{border-color:var(--accent);color:var(--accent2);background:var(--accent-dim)}
+.wdata{background:rgba(90,167,214,.06);border:1px dashed rgba(90,167,214,.35);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#bcd6e8}
+.low{color:var(--danger);font-weight:700}
+dialog{background:var(--card);color:var(--text);border:1px solid var(--border2);border-radius:14px;padding:22px;max-width:680px;width:calc(100% - 32px)}
+dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(3px)}
+dialog h3{color:var(--accent2);margin-bottom:6px}
+.dlg-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.empty{color:var(--dim);text-align:center;padding:30px 10px;font-size:14px}
+
+footer{border-top:1px solid var(--border);color:var(--dim);font-size:12.5px;text-align:center;padding:24px 16px;line-height:1.7}
+footer b{color:var(--muted)}
+@media(max-width:640px){
+  .hwrap{padding:8px 10px;gap:8px}
+  nav{width:100%;overflow-x:auto;flex-wrap:nowrap;margin-left:0;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav button{white-space:nowrap;padding:8px 10px;font-size:13px}
+  main{padding:14px 10px 50px}
+  .hero{padding:30px 18px}
+}
+@media print{ body *{visibility:hidden} }
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="logo"><span class="bolt">⚡</span><div>НА<b>МОТКА</b><small>портал намотчика электродвигателей</small></div></div>
+    <nav id="mainnav">
+      <button data-tab="home" class="active">Главная</button>
+      <button data-tab="ref">📖 Справочник</button>
+      <button data-tab="calc">🧮 Расчёты</button>
+      <button data-tab="schemes">🔌 Схемы</button>
+    </nav>
+  </div>
+</header>
+<main>
+<!-- ================= ГЛАВНАЯ ================= -->
+<section class="tab active" id="tab-home">
+  <div class="hero">
+    <svg class="coil" width="360" height="360" viewBox="0 0 200 200" fill="none">
+      <circle cx="100" cy="100" r="86" stroke="#e08a3c" stroke-width="3"/>
+      <circle cx="100" cy="100" r="64" stroke="#e08a3c" stroke-width="3"/>
+      <circle cx="100" cy="100" r="42" stroke="#e08a3c" stroke-width="3"/>
+      <g stroke="#e08a3c" stroke-width="5" stroke-linecap="round">
+        <line x1="100" y1="6" x2="100" y2="46"/><line x1="100" y1="154" x2="100" y2="194"/>
+        <line x1="6" y1="100" x2="46" y2="100"/><line x1="154" y1="100" x2="194" y2="100"/>
+      </g>
+    </svg>
+    <h1>Портал <span>намотчика</span><br>электродвигателей</h1>
+    <div class="tagline">Перемотка · Расчёты · Схемы · Справочник</div>
+    <p class="lead">Обмоточные данные, таблицы проводов, калькуляторы перемотки и схемы соединений — в одном месте, работает без доступа к интернету.</p>
+  </div>
+  <div class="tiles">
+    <div class="tile" data-go="ref"><div class="ico">📖</div><h4>Справочник</h4><p>Данные АИР, 4А и АО2, провода ПЭТВ, подшипники, изоляция + личная база двигателей</p></div>
+    <div class="tile" data-go="calc"><div class="ico">🧮</div><h4>Расчёты</h4><p>Пересчёт на другое напряжение, подбор провода, конденсаторы, ток, сопротивление</p></div>
+    <div class="tile" data-go="schemes"><div class="ico">🔌</div><h4>Схемы</h4><p>Звезда/треугольник, маркировка выводов, конденсаторный пуск, развёртка обмотки</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>⚡ Быстрые формулы</h3>
+      <p style="line-height:2">
+      • Ток на 380 В: <b style="color:var(--accent2)">I ≈ 2·P(кВт)</b> А &nbsp;(точнее — в Расчётах)<br>
+      • Витки при смене напряжения: <b style="color:var(--accent2)">W₂ = W₁·U₂/U₁</b><br>
+      • Рабочий конденсатор (Δ, 220 В): <b style="color:var(--accent2)">C ≈ 70 мкФ на 1 кВт</b><br>
+      • Плотность тока для закрытых двигателей: <b style="color:var(--accent2)">4,5–5,5 А/мм²</b><br>
+      • Обороты: 2p=2 → 3000 · 2p=4 → 1500 · 2p=6 → 1000 · 2p=8 → 750
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= СПРАВОЧНИК ================= -->
+<section class="tab" id="tab-ref">
+  <h2 class="section-title">Справочник</h2>
+  <p class="section-sub">Таблицы для повседневной работы. Данные из справочников — ориентировочные: двигатели разных заводов и годов отличаются.</p>
+  <div class="pills" id="ref-pills">
+    <button data-sub="ref-pass" class="active">Двигатели</button>
+    <button data-sub="ref-wire">Провода</button>
+    <button data-sub="ref-bear">Подшипники</button>
+    <button data-sub="ref-misc">Изоляция и маркировка</button>
+    <button data-sub="ref-my">⭐ Мои двигатели</button>
+  </div>
+
+  <div class="subtab active" id="ref-pass">
+    <div class="warn-note">⚠ Обмоточные колонки (Z₁, витки, провод) — <b>ориентировочные</b>, по справочникам. Заводы и годы выпуска отличаются! Перед перемоткой фиксируйте фактические данные: число витков, диаметр провода, схему и шаг. Проверенные данные сохраняйте во вкладке «⭐ Мои двигатели».</div>
+    <div class="chipbar" id="series-pass" style="margin-bottom:10px">
+      <button data-s="АИР" class="active">АИР / АИРМ</button>
+      <button data-s="4А">4А / 4АМ</button>
+      <button data-s="АО2">А2 / АО2</button>
+    </div>
+    <div class="chipbar" id="cols-pass" style="margin-bottom:10px">
+      <button data-c="pass">Паспорт</button>
+      <button data-c="size">Размеры</button>
+      <button data-c="wind">Обмотка</button>
+      <button data-c="all">Все колонки</button>
+    </div>
+    <input class="search" id="search-pass" placeholder="Поиск: АИР80, АО2-32, 1.5, 3000...">
+    <div class="tblwrap"><table id="tbl-pass">
+      <thead></thead>
+      <tbody></tbody>
+    </table></div>
+    <p class="hint">Нажатие на строку открывает карточку двигателя со всеми параметрами. Группы колонок переключаются кнопками над таблицей. Ток: I = P / (√3 · 380 · КПД · cosφ). КПД и cosφ — типовые каталожные; для А2/АО2 — оценка (старая серия, примерно на 2–3% ниже АИР). Наружный Ø статора — диаметр пакета магнитопровода, стандартный для каждого габарита (основной признак для определения габарита). Внутренний Ø статора — типовой для габарита; у 4/6/8-полюсных лист общий, у 2-полюсных — свой, поменьше. Длина сердечника — расчётная оценка (±20%). Обмер магнитопровода позволяет идентифицировать двигатель при отсутствии заводской таблички. Для АИР/4А крупнее 132 габарита длина не оценивается. Обмотка: 1сл. конц. — однослойная концентрическая, 2сл. — двухслойная, «2×…» — два параллельных провода. Для 4А/4АМ обмоточные колонки показаны по АИР-аналогу того же габарита: серии родственные, но не идентичные — обязательно сверяйте с фактической обмоткой. Прочерк — данных нет: вносите фактические данные обмера через «⭐ Мои двигатели».</p>
+  </div>
+
+  <div class="subtab" id="ref-wire">
+    <div class="card" style="margin-bottom:12px">
+      <div class="row">
+        <div><label class="f">Плотность тока, А/мм²</label>
+          <select id="wire-j"><option>4</option><option selected>4.5</option><option>5</option><option>5.5</option><option>6</option><option>6.5</option></select></div>
+        <div><label class="f">Поиск по диаметру</label><input type="text" class="search" id="search-wire" placeholder="0.5" style="margin:0;max-width:none"></div>
+      </div>
+      <p class="hint">Для закрытых двигателей (IP44/IP54) обычно берут 4,5–5,5 А/мм², для продуваемых — до 6,5.</p>
+    </div>
+    <div class="tblwrap"><table id="tbl-wire">
+      <thead><tr><th class="num">Ø по меди, мм</th><th class="num">Ø с изоляцией ~мм</th><th class="num">Сечение, мм²</th><th class="num">Ток, А</th><th class="num">Вес, кг/км</th><th class="num">Ом/м (20°C)</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p class="hint">Провод ПЭТВ-2 / ПЭТ-155. Диаметр с изоляцией — усреднённый по ГОСТ 21428. Сопротивление меди ρ = 0,0175 Ом·мм²/м.</p>
+  </div>
+
+  <div class="subtab" id="ref-bear">
+    <div class="tblwrap"><table id="tbl-bear">
+      <thead><tr><th>Габарит</th><th>Передний (вал)</th><th>Задний</th><th>Закрытый аналог (2RS/Z)</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p class="hint">Типовые подшипники для серии АИР. У конкретного завода может отличаться — уточняйте по маркировке подшипника при разборке. Закрытые исполнения: 180ххх (2RS — резиновое уплотнение), 80ххх (Z — металлическая шайба).</p>
+  </div>
+
+  <div class="subtab" id="ref-misc">
+    <div class="grid g2">
+      <div class="card">
+        <h3>🌡 Классы нагревостойкости изоляции</h3>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Класс</th><th class="num">Макс. t°, °C</th><th>Примеры материалов</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td class="num">105</td><td>х/б, шёлк, бумага в масле</td></tr>
+            <tr><td>E</td><td class="num">120</td><td>ПЭВ-1, лавсан, эмали</td></tr>
+            <tr><td>B</td><td class="num">130</td><td>ПЭТВ, слюда, стеклоткань</td></tr>
+            <tr><td>F</td><td class="num">155</td><td>ПЭТ-155, имидофлекс, синтофлекс</td></tr>
+            <tr><td>H</td><td class="num">180</td><td>ПЭТ-200, кремнийорганика</td></tr>
+          </tbody>
+        </table></div>
+        <p class="hint">Современные АИР обычно класс F. Класс нагревостойкости пропиточного лака — не ниже класса провода: МЛ-92 (B), КО-916К (H).</p>
+      </div>
+      <div class="card">
+        <h3>🔤 Маркировка выводов</h3>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Обмотка</th><th>Начало (нов.)</th><th>Конец (нов.)</th><th>Начало (стар.)</th><th>Конец (стар.)</th></tr></thead>
+          <tbody>
+            <tr><td>1-я фаза</td><td>U1</td><td>U2</td><td>С1</td><td>С4</td></tr>
+            <tr><td>2-я фаза</td><td>V1</td><td>V2</td><td>С2</td><td>С5</td></tr>
+            <tr><td>3-я фаза</td><td>W1</td><td>W2</td><td>С3</td><td>С6</td></tr>
+          </tbody>
+        </table></div>
+        <p class="hint">Напряжения на щитке: 220/380 В → Δ/Y (звезда на 380). 380/660 В → Δ/Y (треугольник на 380). Правило: на меньшее напряжение — треугольник, на большее — звезда.</p>
+      </div>
+      <div class="card">
+        <h3>🔁 Полюса и обороты (50 Гц)</h3>
+        <div class="tblwrap"><table>
+          <thead><tr><th class="num">2p</th><th class="num">Синхронные</th><th class="num">Под нагрузкой ~</th></tr></thead>
+          <tbody>
+            <tr><td class="num">2</td><td class="num">3000</td><td class="num">2820–2900</td></tr>
+            <tr><td class="num">4</td><td class="num">1500</td><td class="num">1370–1450</td></tr>
+            <tr><td class="num">6</td><td class="num">1000</td><td class="num">910–960</td></tr>
+            <tr><td class="num">8</td><td class="num">750</td><td class="num">690–730</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="card">
+        <h3>💧 Плотность тока (медь)</h3>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Исполнение двигателя</th><th class="num">J, А/мм²</th></tr></thead>
+          <tbody>
+            <tr><td>Закрытое обдуваемое (IP44/54), S1</td><td class="num">4,5–5,5</td></tr>
+            <tr><td>Защищённое продуваемое (IP23)</td><td class="num">5,5–6,5</td></tr>
+            <tr><td>Кратковременный режим (S2/S3)</td><td class="num">6–8</td></tr>
+          </tbody>
+        </table></div>
+        <p class="hint">Более высокая плотность тока увеличивает нагрев обмотки. При сомнении принимайте меньшее значение.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="subtab" id="ref-my">
+    <p class="section-sub" style="margin-bottom:10px">Личная база проверенных обмоточных данных. Пополняется вручную или из строк справочника (⭐). Данные хранятся в этом браузере — регулярно выполняйте экспорт резервной копии.</p>
+    <button class="btn sm" id="btn-add-motor">+ Добавить двигатель</button> <button class="btn sm sec" id="btn-export">💾 Экспорт</button> <button class="btn sm sec" id="btn-import">📂 Импорт</button><input type="file" id="import-file" accept=".json" style="display:none">
+    <input class="search" id="search-my" placeholder="Поиск по моей базе..." style="margin-top:12px">
+    <div class="tblwrap"><table id="tbl-my">
+      <thead><tr><th>Тип</th><th class="num">кВт</th><th class="num">2p</th><th class="num">Z₁</th><th class="num">Витков</th><th class="num">Провод</th><th>Схема</th><th>Соед.</th><th>Заметка</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <div class="empty" id="my-empty">База пока пуста</div>
+  </div>
+</section>
+
+<!-- ================= РАСЧЁТЫ ================= -->
+<section class="tab" id="tab-calc">
+  <h2 class="section-title">Расчёты намотчика</h2>
+  <p class="section-sub">Все расчёты выполняются прямо в браузере. Результаты — ориентир для практики, окончательное решение всегда за мастером.</p>
+  <div class="grid g2">
+
+    <div class="card">
+      <h3>🔁 Пересчёт обмотки на другое напряжение</h3>
+      <div class="row">
+        <div><label class="f">Витков сейчас, W₁</label><input type="number" id="cv-w1" placeholder="96"></div>
+        <div><label class="f">Напряжение было, U₁</label><input type="number" id="cv-u1" value="380"></div>
+        <div><label class="f">Нужно, U₂</label><input type="number" id="cv-u2" value="220"></div>
+        <div><label class="f">Провод был, Ø мм</label><input type="number" id="cv-d1" step="0.01" placeholder="0.45"></div>
+      </div>
+      <button class="btn" onclick="calcVolt()">Рассчитать</button>
+      <div class="result" id="res-volt"></div>
+      <p class="hint">W₂ = W₁·U₂/U₁ — витки меняются пропорционально напряжению. Провод: d₂ = d₁·√(U₁/U₂) — сечение растёт во столько же раз, во сколько упало число витков (заполнение паза сохраняется).</p>
+    </div>
+
+    <div class="card">
+      <h3>📏 Провод: диаметр → сечение → ток</h3>
+      <div class="row">
+        <div><label class="f">Диаметр по меди, мм</label><input type="number" id="cw-d" step="0.01" placeholder="0.5"></div>
+        <div><label class="f">Проводов параллельно</label><input type="number" id="cw-n" value="1" min="1"></div>
+        <div><label class="f">Плотность J, А/мм²</label><select id="cw-j"><option>4</option><option selected>4.5</option><option>5</option><option>5.5</option><option>6</option><option>6.5</option></select></div>
+      </div>
+      <button class="btn" onclick="calcWire()">Рассчитать</button>
+      <div class="result" id="res-wire"></div>
+    </div>
+
+    <div class="card">
+      <h3>🔀 Замена провода (подбор эквивалента)</h3>
+      <p>Подбор эквивалентного сечения из нескольких параллельных проводов.</p>
+      <div class="row">
+        <div><label class="f">Нужный диаметр, мм</label><input type="number" id="cr-d" step="0.01" placeholder="0.9"></div>
+      </div>
+      <button class="btn" onclick="calcReplace()">Подобрать варианты</button>
+      <div class="result" id="res-replace"></div>
+      <p class="hint">Варианты подбираются из стандартного ряда диаметров с отклонением сечения не более ±6%. Укладка двух-трёх параллельных проводов меньшего диаметра технологичнее одного провода большого сечения.</p>
+    </div>
+
+    <div class="card">
+      <h3>⚡ Ток двигателя</h3>
+      <div class="row">
+        <div><label class="f">Мощность, кВт</label><input type="number" id="ci-p" step="0.01" placeholder="1.5"></div>
+        <div><label class="f">Напряжение, В</label><select id="ci-u"><option>220</option><option selected>380</option><option>660</option></select></div>
+        <div><label class="f">КПД, %</label><input type="number" id="ci-eff" value="80"></div>
+        <div><label class="f">cos φ</label><input type="number" id="ci-cos" step="0.01" value="0.8"></div>
+      </div>
+      <button class="btn" onclick="calcCurrent()">Рассчитать</button>
+      <div class="result" id="res-current"></div>
+      <p class="hint">Трёхфазная сеть: I = P / (√3·U·КПД·cosφ). Приближённая оценка для 380 В: I ≈ 2·P(кВт).</p>
+    </div>
+
+    <div class="card">
+      <h3>🔋 Конденсатор для однофазного включения</h3>
+      <div class="row">
+        <div><label class="f">Считать по</label><select id="cc-mode"><option value="p">Мощности двигателя</option><option value="i">Номинальному току</option></select></div>
+        <div><label class="f">кВт / А</label><input type="number" id="cc-val" step="0.01" placeholder="1.1"></div>
+        <div><label class="f">Схема</label><select id="cc-sch"><option value="d" selected>Треугольник (220 В)</option><option value="y">Звезда</option></select></div>
+      </div>
+      <button class="btn" onclick="calcCap()">Рассчитать</button>
+      <div class="result" id="res-cap"></div>
+      <p class="hint">Cраб = 4800·I/U (Δ) или 2800·I/U (Y). Пусковой — в 2,5–3 раза больше рабочего, включается через кнопку на 2–3 секунды. Конденсаторы — плёночные (МБГО, МБГЧ, CBB60) на напряжение не ниже 450 В.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧵 Сопротивление обмотки</h3>
+      <div class="row">
+        <div><label class="f">Длина провода, м</label><input type="number" id="cres-l" placeholder="120"></div>
+        <div><label class="f">Диаметр, мм</label><input type="number" id="cres-d" step="0.01" placeholder="0.45"></div>
+        <div><label class="f">Температура, °C</label><input type="number" id="cres-t" value="20"></div>
+      </div>
+      <button class="btn" onclick="calcRes()">Рассчитать</button>
+      <div class="result" id="res-res"></div>
+      <p class="hint">R = ρ·L/S, медь ρ = 0,0175 Ом·мм²/м при 20 °C, температурный коэффициент 0,004/°C. Сравните расчётное значение с результатом измерения — сопротивления фаз не должны отличаться более чем на 2–5%.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧮 Помощник по пазам (q, τ, шаг)</h3>
+      <div class="row">
+        <div><label class="f">Пазов статора, Z₁</label><input type="number" id="cz-z" placeholder="24"></div>
+        <div><label class="f">Полюсов, 2p</label><select id="cz-p"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></div>
+      </div>
+      <button class="btn" onclick="calcSlots()">Рассчитать</button>
+      <div class="result" id="res-slots"></div>
+      <p class="hint">q — пазов на полюс и фазу, τ — полюсное деление. Развёртка обмотки для заданных Z₁ и 2p — в разделе «Схемы».</p>
+    </div>
+
+    <div class="card">
+      <h3>📐 Оценка мощности по сердечнику</h3>
+      <p>Заводская табличка отсутствует? Оценка мощности по размерам сердечника статора.</p>
+      <div class="row">
+        <div><label class="f">Внутр. Ø статора D, мм</label><input type="number" id="cp-d" placeholder="80"></div>
+        <div><label class="f">Длина железа l, мм</label><input type="number" id="cp-l" placeholder="100"></div>
+        <div><label class="f">Полюсов, 2p</label><select id="cp-p"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></div>
+      </div>
+      <button class="btn" onclick="calcPower()">Оценить</button>
+      <div class="result" id="res-power"></div>
+      <p class="hint">Грубая эмпирическая оценка P ≈ k·D²·l·n·10⁻⁶ (D, l в см). Точность ±25% — далее уточняйте по таблицам, числу пазов и габариту.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= СХЕМЫ ================= -->
+<section class="tab" id="tab-schemes">
+  <h2 class="section-title">Схемы соединений и обмоток</h2>
+  <p class="section-sub">Клеммная колодка, звезда/треугольник, конденсаторный пуск и генератор развёртки обмотки.</p>
+  <div class="pills" id="sch-pills">
+    <button data-sub="sch-yd" class="active">Звезда / Треугольник</button>
+    <button data-sub="sch-cap">Конденсаторный пуск</button>
+    <button data-sub="sch-matrix">Пазы × обороты</button>
+    <button data-sub="sch-wind">Развёртка обмотки</button>
+  </div>
+
+  <div class="subtab active" id="sch-yd">
+    <div class="grid g2">
+      <div class="card">
+        <h3>⭐ Звезда (Y)</h3>
+        <div class="scheme-box" id="svg-star"></div>
+        <p class="hint">Перемычки соединяют весь верхний ряд: W2–U2–V2. Сеть подаётся на U1, V1, W1. Для двигателя 220/380 В звезда — это включение в сеть 380 В. Фазное напряжение обмотки = линейное/√3.</p>
+      </div>
+      <div class="card">
+        <h3>△ Треугольник (Δ)</h3>
+        <div class="scheme-box" id="svg-delta"></div>
+        <p class="hint">Перемычки ставятся вертикально: W2–U1, U2–V1, V2–W1. Для двигателя 220/380 В треугольник — сеть 220 В (или 380 В для двигателя 380/660). На каждую обмотку приходится полное линейное напряжение.</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h3>ℹ Как выбрать схему</h3>
+      <p>На заводской табличке указаны два напряжения, например <b style="color:var(--accent2)">220/380 В Δ/Y</b>: первая цифра — для треугольника, вторая — для звезды. Правило простое: <b style="color:var(--accent2)">на меньшее напряжение — треугольник, на большее — звезда</b>. При включении на пониженное напряжение двигатель не развивает номинальный момент; при включении на повышенное — обмотка выходит из строя.</p>
+    </div>
+  </div>
+
+  <div class="subtab" id="sch-cap">
+    <div class="grid g2">
+      <div class="card">
+        <h3>🔋 Включение в 220 В через конденсатор</h3>
+        <div class="scheme-box" id="svg-cap"></div>
+        <p class="hint">Двигатель собирается в треугольник (для 220/380 В). Рабочий конденсатор Cр включён постоянно, пусковой Cп — параллельно ему через кнопку без фиксации, только на время разгона (2–3 с). Реверс — переключение точки подключения конденсатора на другой сетевой провод.</p>
+      </div>
+      <div class="card">
+        <h3>📊 Подбор ёмкости</h3>
+        <div class="tblwrap"><table>
+          <thead><tr><th class="num">P, кВт</th><th class="num">Cраб ~мкФ (Δ, 220В)</th><th class="num">Cпуск ~мкФ</th></tr></thead>
+          <tbody id="cap-table"></tbody>
+        </table></div>
+        <p class="hint">Ориентир: ~70 мкФ на 1 кВт (треугольник, 220 В). Точный подбор — по нагреву и току: в разделе «Расчёты» есть калькулятор. Потеря мощности при конденсаторном включении — до 30–40%.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="subtab" id="sch-matrix">
+    <div class="card">
+      <h3>🧩 Трёхфазные односкоростные: число пазов × частота вращения</h3>
+      <div class="tblwrap"><table id="tbl-mx3" class="mxt"></table></div>
+      <p class="hint">По материалам «Справочника обмотчика асинхронных электродвигателей». Отметка — применяемое сочетание числа пазов статора и синхронной частоты вращения (2p = 6000 / n). Нажатие на отметку открывает построение развёртки обмотки для данного сочетания; для части сочетаний (дробное q) однослойная развёртка не строится — выводится предупреждение.</p>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h3>🧩 Однофазные: число пазов × частота вращения</h3>
+      <div class="tblwrap"><table id="tbl-mx1" class="mxt"></table></div>
+      <p class="hint">Сочетания приведены справочно. Построение развёрток однофазных обмоток пока не поддерживается. Таблица многоскоростных двигателей будет добавлена по получении продолжения источника.</p>
+    </div>
+  </div>
+
+  <div class="subtab" id="sch-wind">
+    <div class="card">
+      <h3>🌀 Генератор развёртки однослойной обмотки</h3>
+      <div class="row">
+        <div><label class="f">Пазов статора, Z₁</label><select id="wg-z"><option>9</option><option>12</option><option>15</option><option>16</option><option>18</option><option selected>24</option><option>27</option><option>28</option><option>30</option><option>32</option><option>33</option><option>36</option><option>40</option><option>41</option><option>42</option><option>45</option><option>48</option><option>51</option><option>54</option><option>60</option><option>63</option><option>72</option><option>75</option><option>90</option></select></div>
+        <div><label class="f">Полюсов, 2p</label><select id="wg-p"><option>2</option><option selected>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>14</option><option>16</option><option>18</option><option>20</option><option>24</option><option>26</option><option>28</option><option>30</option><option>32</option><option>34</option><option>36</option><option>40</option><option>42</option><option>46</option><option>48</option><option>50</option><option>56</option><option>60</option><option>64</option></select></div>
+        <div style="align-self:end"><button class="btn" style="margin-top:0" onclick="drawWinding()">Построить</button></div>
+      </div>
+      <div class="scheme-box" id="svg-winding" style="margin-top:14px"></div>
+      <div class="legend"><span><i style="background:#e8c33c"></i>Фаза A (U)</span><span><i style="background:#58b368"></i>Фаза B (V)</span><span><i style="background:#e05c4a"></i>Фаза C (W)</span></div>
+      <div id="wg-info" class="wdata" style="display:none"></div>
+      <p class="hint">Строится классическая однослойная концентрическая обмотка (при чётном q) или упрощённая равнокатушечная развёртка (при нечётном q). Пунктир — катушка, уходящая через край развёртки. Порядок соединения катушечных групп внутри фазы — «конец с концом, начало с началом» (встречное включение соседних групп).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ДИАЛОГИ ================= -->
+<dialog id="dlg-view">
+  <h3 id="mv-title">Двигатель</h3>
+  <div class="mgrid" id="mv-grid"></div>
+  <div class="dlg-actions">
+    <button class="btn sec" onclick="document.getElementById('dlg-view').close()">Закрыть</button>
+    <button class="btn" id="mv-star">⭐ В мою базу</button>
+  </div>
+</dialog>
+
+<dialog id="dlg-motor">
+  <h3 id="dlg-motor-title">Двигатель в мою базу</h3>
+  <form method="dialog" id="form-motor">
+    <input type="hidden" id="m-id">
+    <div class="row">
+      <div><label class="f">Тип *</label><input type="text" id="m-type" placeholder="АИР80В4" required></div>
+      <div><label class="f">кВт</label><input type="number" id="m-kw" step="0.01"></div>
+      <div><label class="f">2p</label><select id="m-p"><option></option><option>2</option><option>4</option><option>6</option><option>8</option></select></div>
+    </div>
+    <div class="row">
+      <div><label class="f">Пазов Z₁</label><input type="number" id="m-z"></div>
+      <div><label class="f">Витков в пазу</label><input type="text" id="m-turns"></div>
+      <div><label class="f">Провод, мм</label><input type="text" id="m-wire"></div>
+    </div>
+    <div class="row">
+      <div><label class="f">Схема / шаг</label><input type="text" id="m-scheme" placeholder="1сл. конц., 1-8, 2-7"></div>
+      <div><label class="f">Соединение</label><select id="m-conn"><option></option><option>Y</option><option>Δ</option><option>Y/Δ</option></select></div>
+    </div>
+    <label class="f">Заметка</label>
+    <textarea id="m-note" placeholder="Проверено в работе, намотка в 2 провода Ø0,5"></textarea>
+    <div class="dlg-actions">
+      <button class="btn sec" value="cancel" formnovalidate>Отмена</button>
+      <button class="btn" value="ok">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
+</main>
+<footer>
+  <b>НАМОТКА</b> — личный портал намотчика электродвигателей · собрано на основе справочника мастерской «Энергоцех»<br>
+  Справочные данные ориентировочные — сверяйте с фактическими обмоточными данными, снятыми при разборке двигателя.<br>
+  База «Мои двигатели» хранится в этом браузере. Резервная копия: Справочник → Мои двигатели → Экспорт.
+</footer>
+<script>
+'use strict';
+/* ============ helpers ============ */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = (n, d=2) => (+n).toLocaleString('ru-RU', {maximumFractionDigits:d});
+const LS = {
+  get(k, def){ try{ const v = localStorage.getItem('namotka.'+k); return v ? JSON.parse(v) : def; }catch(e){ return def; } },
+  set(k, v){ try{ localStorage.setItem('namotka.'+k, JSON.stringify(v)); }catch(e){ alert('Не удалось сохранить данные (localStorage недоступен)'); } }
+};
+
+/* ============ данные: АИР паспортные ============ */
+/* [тип, кВт, 2p, об/мин, КПД %, cosφ] — типовые каталожные значения */
+const AIR_PASS = [
+ ['АИР56А4',0.12,4,1350,57,0.72],
+ ['АИР56А2',0.18,2,2840,66,0.76],
+ ['АИР56В4',0.18,4,1350,60,0.7],
+ ['АИР56В2',0.25,2,2840,68,0.77],
+ ['АИР63А6',0.18,6,860,56,0.62],
+ ['АИР63А4',0.25,4,1320,65,0.67],
+ ['АИР63В6',0.25,6,860,59,0.62],
+ ['АИР63А2',0.37,2,2840,72,0.86],
+ ['АИР63В4',0.37,4,1320,68,0.7],
+ ['АИР63В2',0.55,2,2840,75,0.85],
+ ['АИР71В8',0.25,8,680,56,0.65],
+ ['АИР71А6',0.37,6,900,65,0.65],
+ ['АИР71А4',0.55,4,1360,70.5,0.7],
+ ['АИР71В6',0.55,6,900,68.5,0.7],
+ ['АИР71А2',0.75,2,2840,78.5,0.83],
+ ['АИР71В4',0.75,4,1350,73,0.73],
+ ['АИР71В2',1.1,2,2840,79,0.83],
+ ['АИР80А8',0.37,8,680,62,0.61],
+ ['АИР80В8',0.55,8,680,65,0.63],
+ ['АИР80А6',0.75,6,920,70,0.72],
+ ['АИР80А4',1.1,4,1400,75,0.81],
+ ['АИР80В6',1.1,6,920,74,0.74],
+ ['АИР80А2',1.5,2,2850,81,0.85],
+ ['АИР80В4',1.5,4,1400,78,0.83],
+ ['АИР80В2',2.2,2,2850,83,0.87],
+ ['АИР90LA8',0.75,8,700,70,0.67],
+ ['АИР90LB8',1.1,8,700,72,0.69],
+ ['АИР90L6',1.5,6,935,76,0.72],
+ ['АИР90L4',2.2,4,1410,80,0.83],
+ ['АИР90L2',3,2,2860,84.5,0.88],
+ ['АИР100L8',1.5,8,700,74,0.65],
+ ['АИР100L6',2.2,6,945,81,0.74],
+ ['АИР100S4',3,4,1410,82,0.83],
+ ['АИР100S2',4,2,2880,87,0.88],
+ ['АИР100L4',4,4,1430,85,0.84],
+ ['АИР100L2',5.5,2,2880,88,0.89],
+ ['АИР112MA8',2.2,8,700,76.5,0.71],
+ ['АИР112MA6',3,6,950,81,0.76],
+ ['АИР112MB8',3,8,700,79,0.74],
+ ['АИР112MB6',4,6,950,82,0.81],
+ ['АИР112M4',5.5,4,1440,85.5,0.86],
+ ['АИР112M2',7.5,2,2900,87.5,0.88],
+ ['АИР132S8',4,8,720,83,0.7],
+ ['АИР132S6',5.5,6,960,85,0.8],
+ ['АИР132M8',5.5,8,720,83,0.74],
+ ['АИР132S4',7.5,4,1440,87.5,0.86],
+ ['АИР132M6',7.5,6,960,85.5,0.81],
+ ['АИР132M2',11,2,2900,88,0.9],
+ ['АИР132M4',11,4,1450,87.5,0.87],
+ ['АИР160S8',7.5,8,730,87,0.75],
+ ['АИР160S6',11,6,970,87.5,0.78],
+ ['АИР160M8',11,8,730,87.5,0.75],
+ ['АИР160S2',15,2,2940,89,0.89],
+ ['АИР160S4',15,4,1460,89.5,0.87],
+ ['АИР160M6',15,6,970,89,0.81],
+ ['АИР160M2',18.5,2,2940,90,0.9],
+ ['АИР160M4',18.5,4,1460,90,0.88],
+ ['АИР180M8',15,8,730,88,0.82],
+ ['АИР180M6',18.5,6,970,89.5,0.85],
+ ['АИР180S2',22,2,2940,90.5,0.9],
+ ['АИР180S4',22,4,1460,90,0.87],
+ ['АИР180M2',30,2,2940,91.5,0.9],
+ ['АИР180M4',30,4,1460,91.5,0.87],
+ ['АИР200M8',18.5,8,730,88.5,0.76],
+ ['АИР200M6',22,6,975,90,0.83],
+ ['АИР200L8',22,8,730,88.5,0.78],
+ ['АИР200L6',30,6,975,90.5,0.84],
+ ['АИР200M2',37,2,2950,92,0.89],
+ ['АИР200M4',37,4,1470,92,0.87],
+ ['АИР200L2',45,2,2950,92.5,0.9],
+ ['АИР200L4',45,4,1470,92.5,0.87],
+ ['АИР225M8',30,8,735,90.5,0.79],
+ ['АИР225M6',37,6,980,91,0.86],
+ ['АИР225M2',55,2,2955,93,0.9],
+ ['АИР225M4',55,4,1475,93,0.88],
+ ['АИР250S8',37,8,740,91,0.79],
+ ['АИР250S6',45,6,985,91.5,0.87],
+ ['АИР250M8',45,8,740,91.5,0.79],
+ ['АИР250M6',55,6,985,92,0.87],
+ ['АИР250S2',75,2,2965,93,0.9],
+ ['АИР250S4',75,4,1480,93.5,0.88],
+ ['АИР250M2',90,2,2965,93.5,0.91],
+ ['АИР250M4',90,4,1480,93.5,0.88]
+];
+
+/* ============ данные: АИР обмоточные (ориентировочные!) ============ */
+/* [тип, кВт, 2p, Z1, витков в пазу, провод d мм, обмотка, соединение, медь кг] */
+const AIR_WIND = [
+ ['АИР56А4',0.12,4,24,217,'0,224','1сл. конц.','Y',0.55],
+ ['АИР56А2',0.18,2,24,185,'0,25','1сл. конц.','Y',0.6],
+ ['АИР56В4',0.18,4,24,185,'0,236','1сл. конц.','Y',0.6],
+ ['АИР56В2',0.25,2,24,160,'0,265','1сл. конц.','Y',0.65],
+ ['АИР63А4',0.25,4,24,156,'0,28','1сл. конц.','Y',0.7],
+ ['АИР63А2',0.37,2,24,132,'0,315','1сл. конц.','Y',0.75],
+ ['АИР63В4',0.37,4,24,130,'0,315','1сл. конц.','Y',0.75],
+ ['АИР63В2',0.55,2,24,110,'0,355','1сл. конц.','Y',0.8],
+ ['АИР71А4',0.55,4,24,118,'0,355','1сл. конц.','Y',0.9],
+ ['АИР71А2',0.75,2,24,95,'0,4','1сл. конц.','Y',1.0],
+ ['АИР71В4',0.75,4,24,100,'0,4','1сл. конц.','Y',1.0],
+ ['АИР71В2',1.1,2,24,82,'0,45','1сл. конц.','Y',1.1],
+ ['АИР80А4',1.1,4,36,88,'0,475','1сл. конц.','Y',1.3],
+ ['АИР80А2',1.5,2,24,62,'0,56','1сл. конц.','Y',1.4],
+ ['АИР80В4',1.5,4,36,74,'0,53','1сл. конц.','Y',1.5],
+ ['АИР80В2',2.2,2,24,52,'0,63','1сл. конц.','Y',1.6],
+ ['АИР90L4',2.2,4,36,62,'0,6','1сл. конц.','Y',1.8],
+ ['АИР90L2',3,2,24,45,'0,71','1сл. конц.','Y',1.9],
+ ['АИР100S4',3,4,36,50,'0,71','1сл. конц.','Y',2.3],
+ ['АИР100S2',4,2,24,36,'0,8','1сл. конц.','Y',2.4],
+ ['АИР100L4',4,4,36,42,'0,8','1сл. конц.','Y',2.6],
+ ['АИР100L2',5.5,2,24,30,'0,9','1сл. конц.','Y',2.8],
+ ['АИР112M4',5.5,4,36,26,'2×0,71','1сл. конц.','Δ',3.0],
+ ['АИР112M2',7.5,2,36,16,'2×0,9','1сл. конц.','Δ',3.4],
+ ['АИР132S4',7.5,4,48,19,'2×0,8','2сл.','Δ',4.0],
+ ['АИР132M2',11,2,36,13,'2×1,06','2сл.','Δ',4.6],
+ ['АИР132M4',11,4,48,15,'2×0,95','2сл.','Δ',4.8]
+];
+
+const AO2_WIND = [
+ ['АО2-11-6',0.4,6,36,138,'0,335','1сл. конц.','Y',0.9],
+ ['АО2-11-4',0.6,4,24,112,'0,4','1сл. конц.','Y',1.0],
+ ['АО2-11-2',0.8,2,24,100,'0,45','1сл. конц.','Y',1.1],
+ ['АО2-12-6',0.6,6,36,118,'0,375','1сл. конц.','Y',1.0],
+ ['АО2-12-4',0.8,4,24,96,'0,45','1сл. конц.','Y',1.1],
+ ['АО2-12-2',1.1,2,24,84,'0,5','1сл. конц.','Y',1.2],
+ ['АО2-21-6',0.8,6,36,100,'0,425','1сл. конц.','Y',1.2],
+ ['АО2-21-4',1.1,4,36,84,'0,475','1сл. конц.','Y',1.3],
+ ['АО2-21-2',1.5,2,24,68,'0,56','1сл. конц.','Y',1.4],
+ ['АО2-22-6',1.1,6,36,86,'0,45','1сл. конц.','Y',1.3],
+ ['АО2-22-4',1.5,4,36,70,'0,53','1сл. конц.','Y',1.5],
+ ['АО2-22-2',2.2,2,24,56,'0,63','1сл. конц.','Y',1.6],
+ ['АО2-31-8',1.1,8,48,88,'0,45','1сл. конц.','Y',1.4],
+ ['АО2-31-6',1.5,6,36,74,'0,5','1сл. конц.','Y',1.5],
+ ['АО2-31-4',2.2,4,36,58,'0,6','1сл. конц.','Y',1.8],
+ ['АО2-31-2',3.0,2,24,46,'0,71','1сл. конц.','Y',1.9],
+ ['АО2-32-8',1.5,8,48,74,'0,5','1сл. конц.','Y',1.7],
+ ['АО2-32-6',2.2,6,36,62,'0,56','1сл. конц.','Y',1.9],
+ ['АО2-32-4',3.0,4,36,48,'0,67','1сл. конц.','Y',2.2],
+ ['АО2-32-2',4.0,2,24,38,'0,8','1сл. конц.','Y',2.3],
+ ['АО2-41-8',2.2,8,48,62,'0,56','2сл.','Y',2.2],
+ ['АО2-41-6',3.0,6,54,52,'0,63','2сл.','Y',2.4],
+ ['АО2-41-4',4.0,4,36,40,'0,75','2сл.','Y',2.6],
+ ['АО2-41-2',5.5,2,24,30,'0,9','2сл.','Δ',2.7],
+ ['АО2-42-8',3.0,8,48,52,'0,6','2сл.','Y',2.5],
+ ['АО2-42-6',4.0,6,54,44,'0,71','2сл.','Y',2.8],
+ ['АО2-42-4',5.5,4,36,33,'0,85','2сл.','Δ',3.0],
+ ['АО2-42-2',7.5,2,24,25,'2×0,71','2сл.','Δ',3.2],
+ ['АО2-51-8',4.0,8,48,44,'0,67','2сл.','Y',3.0],
+ ['АО2-51-6',5.5,6,54,36,'0,8','2сл.','Δ',3.4],
+ ['АО2-51-4',7.5,4,48,26,'2×0,71','2сл.','Δ',3.8],
+ ['АО2-51-2',10,2,36,19,'2×0,85','2сл.','Δ',4.0],
+ ['АО2-52-8',5.5,8,48,38,'0,75','2сл.','Δ',3.6],
+ ['АО2-52-6',7.5,6,54,30,'2×0,63','2сл.','Δ',4.0],
+ ['АО2-52-4',10,4,48,22,'2×0,8','2сл.','Δ',4.4],
+ ['АО2-52-2',13,2,36,16,'2×0,95','2сл.','Δ',4.6],
+ ['АО2-61-4',13,4,48,18,'2×0,9','2сл.','Δ',5.5],
+ ['АО2-62-4',17,4,48,15,'2×1,0','2сл.','Δ',6.5]
+];
+
+/* ============ данные: провода — стандартный ряд диаметров ============ */
+const WIRE_D = [0.18,0.19,0.2,0.212,0.224,0.236,0.25,0.265,0.28,0.3,0.315,0.335,0.355,0.375,0.4,0.425,0.45,0.475,0.5,0.53,0.56,0.6,0.63,0.67,0.71,0.75,0.8,0.85,0.9,0.95,1.0,1.06,1.12,1.18,1.25,1.32,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.12,2.24,2.36,2.5];
+const wireS = d => Math.PI * d * d / 4;
+const wireIns = d => d <= 0.35 ? d + 0.045 : d <= 0.69 ? d + 0.06 : d <= 1.0 ? d + 0.075 : d <= 1.6 ? d + 0.085 : d + 0.1;
+const RHO_CU = 0.0175; /* Ом·мм²/м */
+
+/* ============ данные: подшипники ============ */
+const BEARINGS = [
+ ['АИР56','6201','6201','180201 / 80201'],
+ ['АИР63','6202','6202','180202 / 80202'],
+ ['АИР71','6203','6203','180203 / 80203'],
+ ['АИР80','6204','6204','180204 / 80204'],
+ ['АИР90','6205','6205','180205 / 80205'],
+ ['АИР100','6206','6206','180206 / 80206'],
+ ['АИР112','6306','6306','180306 / 80306'],
+ ['АИР132','6308','6308','180308 / 80308'],
+ ['АИР160','6309 (2p=2: 6209)','6309','180309'],
+ ['АИР180','6310 (2p=2: 6210)','6310','180310'],
+ ['АИР200','6312','6312','180312'],
+ ['АИР225','6313 (2p=2: 6312)','6313','—'],
+ ['АИР250','6314 (2p=2: 6313)','6314','—']
+];
+
+/* ============ router ============ */
+function goTab(name){
+  $$('#mainnav button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  $$('section.tab').forEach(s => s.classList.toggle('active', s.id === 'tab-' + name));
+  location.hash = name;
+  window.scrollTo({top:0});
+}
+$$('#mainnav button').forEach(b => b.onclick = () => goTab(b.dataset.tab));
+$$('.tile[data-go]').forEach(t => t.onclick = () => goTab(t.dataset.go));
+function initSubtabs(pillsId){
+  $$('#'+pillsId+' button').forEach(b => b.onclick = () => {
+    $$('#'+pillsId+' button').forEach(x => x.classList.toggle('active', x === b));
+    const box = $('#'+pillsId).parentElement;
+    box.querySelectorAll(':scope > .subtab').forEach(s => s.classList.toggle('active', s.id === b.dataset.sub));
+  });
+}
+initSubtabs('ref-pills'); initSubtabs('sch-pills');
+
+/* ============ справочник: рендер таблиц ============ */
+const A4_PASS = AIR_PASS.map(r => ['4А' + r[0].slice(3), r[1], r[2], Math.max(600, r[3]-10), Math.round((r[4]-1)*10)/10, r[5]]);
+let passSeries = 'АИР';
+const WIND_BY_TYPE = {};
+AIR_WIND.forEach(r => WIND_BY_TYPE[r[0]] = r);
+function nearestAir(p2, P){
+  let best = null;
+  AIR_PASS.forEach(r => { if(r[2] === p2 && (!best || Math.abs(r[1]-P) < Math.abs(best[1]-P))) best = r; });
+  return best;
+}
+const DN_FRAME = {
+  'АИР': {56:89, 63:100, 71:116, 80:131, 90:149, 100:168, 112:191, 132:225, 160:272, 180:313, 200:349, 225:392, 250:437},
+  'АО2': {11:116, 12:116, 21:131, 22:131, 31:149, 32:149, 41:168, 42:168, 51:191, 52:191, 61:225, 62:225}
+};
+const D1_FRAME = {
+  'АИР': {56:[45,50], 63:[50,56], 71:[59,66], 80:[67,76], 90:[76,86], 100:[84,95], 112:[98,113], 132:[116,133], 160:[138,158], 180:[158,185], 200:[178,207], 225:[203,235], 250:[225,260]},
+  'АО2': {11:[59,67], 12:[59,67], 21:[67,76], 22:[67,76], 31:[76,86], 32:[76,86], 41:[85,98], 42:[85,98], 51:[97,111], 52:[97,111], 61:[115,131], 62:[115,131]}
+};
+function geom(t, p2, P){
+  const fr = (t.match(/\d+/g) || []).map(Number);
+  const isAO2 = t.indexOf('АО2') === 0;
+  const frame = (isAO2 || t.indexOf('4А') === 0) ? fr[1] : fr[0];
+  const dn = isAO2 ? DN_FRAME['АО2'][frame] : DN_FRAME['АИР'][frame];
+  const d1 = isAO2 ? D1_FRAME['АО2'][frame] : D1_FRAME['АИР'][frame];
+  if(!dn || !d1) return null;
+  const D = d1[p2 === 2 ? 0 : 1];
+  const ns = 6000 / p2;
+  const C = 1.2 * Math.pow(P, 0.35);
+  let l = Math.round(P * 1e6 / (C * Math.pow(D/10, 2) * ns) * 10 / 5) * 5;
+  if(!isAO2 && frame > 132) l = null;
+  return {D, dn, l};
+}
+function motorRows(){
+  if(passSeries === 'АИР') return AIR_PASS.map(r => ({t:r[0], p:r[1], p2:r[2], n:r[3], eff:r[4], cos:r[5], w:WIND_BY_TYPE[r[0]]}));
+  if(passSeries === '4А') return A4_PASS.map(r => ({t:r[0], p:r[1], p2:r[2], n:r[3], eff:r[4], cos:r[5], w:WIND_BY_TYPE['АИР' + r[0].slice(2)] || null}));
+  const N = {2:2860, 4:1430, 6:950, 8:720};
+  return AO2_WIND.map(w => {
+    const a = nearestAir(w[2], w[1]);
+    return {t:w[0], p:w[1], p2:w[2], n:N[w[2]], eff:a?Math.round((a[4]-2.5)*10)/10:'', cos:a?Math.round((a[5]-0.02)*100)/100:'', w};
+  });
+}
+const PASS_COLS = [
+ {h:'Тип'},{h:'кВт',c:'num'},{h:'2p',c:'num'},{h:'об/мин',c:'num'},{h:'КПД %',c:'num'},{h:'cos φ',c:'num'},{h:'I 380В, А',c:'num'},
+ {h:'Ø вн., мм',f:'Внутренний Ø статора, мм',c:'num'},{h:'Ø нар., мм',f:'Наружный Ø статора, мм',c:'num'},{h:'L ~мм',f:'Длина сердечника, мм (оценка)',c:'num'},
+ {h:'Z₁',c:'num'},{h:'Витков',f:'Витков в пазу',c:'num'},{h:'Провод, мм',c:'num'},{h:'Обмотка'},{h:'Соед.'},{h:'Медь ~кг',c:'num'},{h:''}
+];
+const COL_MODES = {pass:[0,1,2,3,4,5,6], size:[0,1,2,7,8,9], wind:[0,1,2,10,11,12,13,14,15,16], all:PASS_COLS.map((_,i)=>i)};
+let passCols = LS.get('cols','pass');
+if(!COL_MODES[passCols]) passCols = 'pass';
+function motorCells(m){
+  const I = m.eff !== '' ? m.p*1000/(1.732*380*(m.eff/100)*m.cos) : null;
+  const w = m.w, g = geom(m.t, m.p2, m.p);
+  return [`<b>${m.t}</b>`, fmt(m.p), m.p2, m.n, m.eff!==''?fmt(m.eff,1):'—', m.cos!==''?fmt(m.cos):'—',
+   `<b style="color:var(--accent2)">${I?fmt(I,1):'—'}</b>`, g?g.D:'—', g?g.dn:'—', g&&g.l?g.l:'—',
+   w?w[3]:'—', w?w[4]:'—', w?w[5]:'—', w?w[6]:'—', w?w[7]:'—', w?fmt(w[8],1):'—',
+   w?`<button class="btn sm sec" title="Скопировать в мою базу" onclick="event.stopPropagation();copyToMy('${m.t}')">⭐</button>`:''];
+}
+function renderPass(){
+  const idx = COL_MODES[passCols];
+  $('#tbl-pass thead').innerHTML = '<tr>' + idx.map(i => `<th class="${PASS_COLS[i].c||''}" title="${PASS_COLS[i].f||''}">${PASS_COLS[i].h}</th>`).join('') + '</tr>';
+  $('#tbl-pass tbody').innerHTML = motorRows().map(m => {
+    const cells = motorCells(m);
+    return `<tr onclick="showMotorCard('${m.t}')">` + idx.map(i => `<td class="${PASS_COLS[i].c||''}">${cells[i]}</td>`).join('') + '</tr>';
+  }).join('');
+  const q = ($('#search-pass').value || '').toLowerCase().replace(',','.');
+  if(q) $$('#tbl-pass tbody tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().replace(/,/g,'.').includes(q) ? '' : 'none';
+  });
+}
+window.showMotorCard = t => {
+  const m = motorRows().find(x => x.t === t);
+  if(!m) return;
+  const cells = motorCells(m);
+  $('#mv-title').textContent = m.t;
+  $('#mv-grid').innerHTML = PASS_COLS.slice(1,16).map((c,i) => `<div class="mi"><div class="ml">${c.f||c.h}</div><div class="mv">${cells[i+1]}</div></div>`).join('');
+  const st = $('#mv-star');
+  st.style.display = m.w ? '' : 'none';
+  st.onclick = () => { $('#dlg-view').close(); copyToMy(m.t); };
+  $('#dlg-view').showModal();
+};
+function renderWire(){
+  const J = +$('#wire-j').value;
+  $('#tbl-wire tbody').innerHTML = WIRE_D.map(d => {
+    const S = wireS(d);
+    return `<tr><td class="num"><b>${fmt(d,3)}</b></td><td class="num">${fmt(wireIns(d),3)}</td><td class="num">${fmt(S,4)}</td><td class="num"><b style="color:var(--accent2)">${fmt(S*J,2)}</b></td><td class="num">${fmt(S*8.9,2)}</td><td class="num">${fmt(RHO_CU/S,4)}</td></tr>`;
+  }).join('');
+}
+function renderBear(){
+  $('#tbl-bear tbody').innerHTML = BEARINGS.map(r =>
+    `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+}
+function tableFilter(inputId, tableId){
+  $('#'+inputId).addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().replace(',','.');
+    $$('#'+tableId+' tbody tr').forEach(tr => {
+      tr.style.display = tr.textContent.toLowerCase().replace(/,/g,'.').includes(q) ? '' : 'none';
+    });
+  });
+}
+renderPass(); renderWire(); renderBear();
+tableFilter('search-pass','tbl-pass'); tableFilter('search-wire','tbl-wire');
+$('#wire-j').onchange = renderWire;
+$('#series-pass').addEventListener('click', e => {
+  if(e.target.tagName !== 'BUTTON') return;
+  $$('#series-pass button').forEach(b => b.classList.toggle('active', b === e.target));
+  passSeries = e.target.dataset.s; renderPass();
+});
+$('#cols-pass').addEventListener('click', e => {
+  if(e.target.tagName !== 'BUTTON') return;
+  passCols = e.target.dataset.c; LS.set('cols', passCols);
+  $$('#cols-pass button').forEach(b => b.classList.toggle('active', b.dataset.c === passCols));
+  renderPass();
+});
+$$('#cols-pass button').forEach(b => b.classList.toggle('active', b.dataset.c === passCols));
+
+/* ============ калькуляторы ============ */
+function showRes(id, html){ const el = $(id); el.innerHTML = html; el.classList.add('show'); }
+function nearestWire(d){ return WIRE_D.reduce((a,b) => Math.abs(b-d) < Math.abs(a-d) ? b : a); }
+
+function calcVolt(){
+  const w1 = +$('#cv-w1').value, u1 = +$('#cv-u1').value, u2 = +$('#cv-u2').value, d1 = +$('#cv-d1').value;
+  if(!w1 || !u1 || !u2) return showRes('#res-volt','Заполни витки и оба напряжения.');
+  const w2 = w1 * u2 / u1;
+  let html = `Новое число витков: <span class="big">${Math.round(w2)}</span> <b>(W₁·U₂/U₁ = ${fmt(w2,1)})</b>`;
+  if(d1){
+    const d2 = d1 * Math.sqrt(u1/u2), dn = nearestWire(d2);
+    html += `<br>Провод: расчётный Ø <b>${fmt(d2,3)} мм</b> → ближайший стандартный <span class="big">${fmt(dn,3)} мм</span>`;
+    html += `<br><span style="color:var(--muted);font-size:13px">Сечение: было ${fmt(wireS(d1),3)} мм² → станет ${fmt(wireS(dn),3)} мм². Проверьте заполнение паза (при точном пересчёте коэффициент заполнения сохраняется).</span>`;
+  }
+  showRes('#res-volt', html);
+}
+
+function calcWire(){
+  const d = +$('#cw-d').value, n = Math.max(1, +$('#cw-n').value||1), J = +$('#cw-j').value;
+  if(!d) return showRes('#res-wire','Укажи диаметр провода.');
+  const S = wireS(d) * n;
+  showRes('#res-wire',
+    `Сечение: <span class="big">${fmt(S,3)} мм²</span> ${n>1?`(${n} пров. Ø${fmt(d,2)})`:''}<br>` +
+    `Допустимый ток при J=${J} А/мм²: <span class="big">${fmt(S*J,1)} А</span><br>` +
+    `<span style="color:var(--muted);font-size:13px">Вес меди: ${fmt(S*8.9,1)} кг/км · Сопротивление: ${fmt(RHO_CU/S,4)} Ом/м · Ø с изоляцией ~${fmt(wireIns(d),2)} мм${n>1?' (каждый провод)':''}</span>`);
+}
+
+function calcReplace(){
+  const d = +$('#cr-d').value;
+  if(!d) return showRes('#res-replace','Укажи нужный диаметр.');
+  const S0 = wireS(d);
+  let rows = '';
+  for(let n=1; n<=4; n++){
+    const dn = nearestWire(2*Math.sqrt(S0/n/Math.PI));
+    const S = wireS(dn)*n, dev = (S/S0-1)*100;
+    const col = Math.abs(dev)<=6 ? 'var(--ok)' : 'var(--danger)';
+    rows += `<tr><td>${n===1?'1 провод':n+' провода'}</td><td class="num"><b>Ø ${fmt(dn,3)}</b></td><td class="num">${fmt(S,3)} мм²</td><td class="num" style="color:${col}">${dev>0?'+':''}${fmt(dev,1)}%</td></tr>`;
+  }
+  showRes('#res-replace',
+    `Нужное сечение: <b>${fmt(S0,3)} мм²</b> (Ø ${fmt(d,2)})<div class="tblwrap" style="margin-top:8px"><table style="min-width:0"><thead><tr><th>Вариант</th><th class="num">Диаметр</th><th class="num">Сечение</th><th class="num">Отклон.</th></tr></thead><tbody>${rows}</tbody></table></div>`);
+}
+
+function calcCurrent(){
+  const p = +$('#ci-p').value, u = +$('#ci-u').value, eff = (+$('#ci-eff').value||80)/100, cos = +$('#ci-cos').value||0.8;
+  if(!p) return showRes('#res-current','Укажи мощность.');
+  const I = p*1000/(1.732*u*eff*cos);
+  showRes('#res-current', `Номинальный ток: <span class="big">${fmt(I,1)} А</span><br><span style="color:var(--muted);font-size:13px">Пусковой обычно в 5–7 раз больше: ~${fmt(I*5,0)}–${fmt(I*7,0)} А. Уставка теплового реле — ${fmt(I*1.1,1)} А (110%).</span>`);
+}
+
+function calcCap(){
+  const mode = $('#cc-mode').value, v = +$('#cc-val').value, sch = $('#cc-sch').value;
+  if(!v) return showRes('#res-cap','Укажи мощность или ток.');
+  const I = mode==='i' ? v : v*1000/(1.732*380*0.72); /* оценка номинального тока при 380 В */
+  const k = sch==='d' ? 4800 : 2800;
+  const Iw = sch==='d' ? I*1.73 : I; /* в треугольнике на 220 В ток выше */
+  const C = k*Iw/220;
+  showRes('#res-cap',
+    `Рабочий конденсатор: <span class="big">${fmt(C,0)} мкФ</span><br>` +
+    `Пусковой (добавочный): <b>${fmt(C*2.5,0)}–${fmt(C*3,0)} мкФ</b>, включать на 2–3 с через кнопку<br>` +
+    `<span style="color:var(--muted);font-size:13px">Напряжение конденсаторов — не ниже 450 В. ${mode==='p'?`Принят ток ~${fmt(I,1)} А (по 380 В). `:''}Окончательно ёмкость уточняется по нагреву и току фаз под нагрузкой.</span>`);
+}
+
+function calcRes(){
+  const L = +$('#cres-l').value, d = +$('#cres-d').value, t = +$('#cres-t').value||20;
+  if(!L || !d) return showRes('#res-res','Укажи длину и диаметр.');
+  const S = wireS(d), R20 = RHO_CU*L/S, Rt = R20*(1+0.004*(t-20));
+  showRes('#res-res', `R при 20 °C: <span class="big">${fmt(R20,2)} Ом</span>` + (t!==20?`<br>R при ${t} °C: <b>${fmt(Rt,2)} Ом</b>`:'') + `<br><span style="color:var(--muted);font-size:13px">Сечение ${fmt(S,3)} мм². Вес этого провода: ${fmt(S*8.9*L/1000,2)} кг.</span>`);
+}
+
+function calcSlots(){
+  const z = +$('#cz-z').value, p2 = +$('#cz-p').value;
+  if(!z) return showRes('#res-slots','Укажи число пазов.');
+  const q = z/(p2*3), tau = z/p2, alpha = p2*180/z;
+  let html = `Пазов на полюс и фазу: <span class="big">q = ${Number.isInteger(q)?q:fmt(q,2)}</span><br>` +
+    `Полюсное деление: <b>τ = ${fmt(tau,1)} пазов</b> · Эл. угол паза: <b>${fmt(alpha,1)}°</b><br>` +
+    `Диаметральный шаг: <b>пазы 1 → ${1+Math.round(tau)}</b> (y = ${Math.round(tau)})`;
+  if(!Number.isInteger(q)) html += `<br><span style="color:var(--warn)">⚠ Дробное q — нестандартное сочетание для однослойной обмотки. Проверь Z и 2p.</span>`;
+  else html += `<br><span style="color:var(--muted);font-size:13px">Катушек на фазу: ${z/6} · Синхронные обороты: ${6000/p2} об/мин. Развёртка — в разделе «Схемы».</span>`;
+  showRes('#res-slots', html);
+}
+
+function calcPower(){
+  const D = +$('#cp-d').value, l = +$('#cp-l').value, p2 = +$('#cp-p').value;
+  if(!D || !l) return showRes('#res-power','Укажи размеры сердечника.');
+  const k = {2:1.3, 4:1.0, 6:0.92, 8:0.85}[p2], n = 6000/p2;
+  const P = k * Math.pow(D/10,2) * (l/10) * n * 1e-6;
+  const lo = P*0.78, hi = P*1.25;
+  showRes('#res-power', `Ориентировочная мощность: <span class="big">~${fmt(P,1)} кВт</span><br><span style="color:var(--muted);font-size:13px">Вероятный диапазон: ${fmt(lo,1)}–${fmt(hi,1)} кВт при 2p=${p2} (${n} об/мин синхр.). Сопоставьте с рядом номинальных мощностей: 0.18 · 0.25 · 0.37 · 0.55 · 0.75 · 1.1 · 1.5 · 2.2 · 3 · 4 · 5.5 · 7.5 · 11 кВт.</span>`);
+}
+
+/* ============ схемы: клеммник ============ */
+function svgTerm(mode){
+  const xs = [70,170,270], yT = 55, yB = 135;
+  const top = ['W2','U2','V2'], bot = ['U1','V1','W1'];
+  let s = `<svg width="340" height="230" viewBox="0 0 340 230" font-family="Inter,sans-serif">`;
+  s += `<rect x="18" y="25" width="304" height="140" rx="10" fill="#221b15" stroke="#3d3327"/>`;
+  /* перемычки */
+  if(mode==='y') s += `<rect x="${xs[0]-26}" y="${yT-8}" width="${xs[2]-xs[0]+52}" height="16" rx="6" fill="#caa46a" stroke="#8a6a3a"/>`;
+  else xs.forEach(x => s += `<rect x="${x-8}" y="${yT-6}" width="16" height="${yB-yT+12}" rx="6" fill="#caa46a" stroke="#8a6a3a"/>`);
+  /* клеммы */
+  xs.forEach((x,i) => {
+    s += `<circle cx="${x}" cy="${yT}" r="13" fill="#2c241c" stroke="#e08a3c" stroke-width="2"/><circle cx="${x}" cy="${yT}" r="4" fill="#e08a3c"/>`;
+    s += `<circle cx="${x}" cy="${yB}" r="13" fill="#2c241c" stroke="#e08a3c" stroke-width="2"/><circle cx="${x}" cy="${yB}" r="4" fill="#e08a3c"/>`;
+    s += `<text x="${x}" y="${yT-22}" fill="#ece3d6" font-size="14" font-weight="700" text-anchor="middle">${top[i]}</text>`;
+    s += `<text x="${x+20}" y="${yB+5}" fill="#ece3d6" font-size="14" font-weight="700">${bot[i]}</text>`;
+    /* сеть */
+    s += `<line x1="${x}" y1="${yB+13}" x2="${x}" y2="198" stroke="#5aa7d6" stroke-width="3"/>`;
+    s += `<text x="${x}" y="216" fill="#5aa7d6" font-size="13" font-weight="700" text-anchor="middle">L${i+1}</text>`;
+  });
+  s += `</svg>`;
+  return s;
+}
+
+/* ============ схема: конденсаторный пуск ============ */
+function svgCap(){
+  return `<svg width="420" height="250" viewBox="0 0 420 250" font-family="Inter,sans-serif">
+  <text x="14" y="34" fill="#5aa7d6" font-size="14" font-weight="700">~220 В</text>
+  <line x1="70" y1="30" x2="360" y2="30" stroke="#5aa7d6" stroke-width="3"/>
+  <text x="368" y="34" fill="#5aa7d6" font-size="13">L</text>
+  <line x1="70" y1="220" x2="360" y2="220" stroke="#5aa7d6" stroke-width="3"/>
+  <text x="368" y="224" fill="#5aa7d6" font-size="13">N</text>
+  <circle cx="200" cy="125" r="52" fill="#221b15" stroke="#e08a3c" stroke-width="3"/>
+  <text x="200" y="120" fill="#ece3d6" font-size="15" font-weight="700" text-anchor="middle">М</text>
+  <text x="200" y="140" fill="#a3937f" font-size="11" text-anchor="middle">3ф, Δ</text>
+  <line x1="200" y1="30" x2="200" y2="73" stroke="#e08a3c" stroke-width="3"/>
+  <line x1="200" y1="177" x2="200" y2="220" stroke="#e08a3c" stroke-width="3"/>
+  <line x1="252" y1="125" x2="320" y2="125" stroke="#e08a3c" stroke-width="3"/>
+  <line x1="320" y1="125" x2="320" y2="64" stroke="#e08a3c" stroke-width="3"/>
+  <g stroke="#f2b56b" stroke-width="3"><line x1="312" y1="64" x2="328" y2="64"/><line x1="312" y1="54" x2="328" y2="54"/></g>
+  <line x1="320" y1="54" x2="320" y2="30" stroke="#e08a3c" stroke-width="3"/>
+  <text x="338" y="64" fill="#f2b56b" font-size="12" font-weight="700">Cр</text>
+  <line x1="320" y1="125" x2="382" y2="125" stroke="#e08a3c" stroke-width="3"/>
+  <line x1="382" y1="125" x2="382" y2="86" stroke="#e08a3c" stroke-width="3"/>
+  <g stroke="#f2b56b" stroke-width="3"><line x1="374" y1="86" x2="390" y2="86"/><line x1="374" y1="76" x2="390" y2="76"/></g>
+  <line x1="382" y1="76" x2="382" y2="52" stroke="#e08a3c" stroke-width="3"/>
+  <circle cx="382" cy="46" r="5" fill="none" stroke="#e05c4a" stroke-width="2"/>
+  <line x1="382" y1="41" x2="370" y2="32" stroke="#e05c4a" stroke-width="2"/>
+  <line x1="360" y1="30" x2="382" y2="30" stroke="#e08a3c" stroke-width="0"/>
+  <line x1="370" y1="30" x2="360" y2="30" stroke="#e08a3c" stroke-width="3"/>
+  <text x="400" y="80" fill="#f2b56b" font-size="12" font-weight="700">Cп</text>
+  <text x="352" y="20" fill="#e05c4a" font-size="11">кнопка «Пуск»</text>
+  </svg>`;
+}
+
+/* ============ таблица конденсаторов ============ */
+function renderCapTable(){
+  const ps = [0.25,0.37,0.55,0.75,1.1,1.5,2.2,3,4];
+  $('#cap-table').innerHTML = ps.map(p =>
+    `<tr><td class="num">${fmt(p)}</td><td class="num"><b>${Math.round(p*70)}</b></td><td class="num">${Math.round(p*70*2.5)}–${Math.round(p*70*3)}</td></tr>`).join('');
+}
+
+/* ============ генератор развёртки обмотки ============ */
+const PHASES = [
+  {ph:0, sign:1},{ph:2, sign:-1},{ph:1, sign:1},{ph:0, sign:-1},{ph:2, sign:1},{ph:1, sign:-1}
+]; /* порядок зон: A  -C  B  -A  C  -B */
+const PH_COLOR = ['#e8c33c','#58b368','#e05c4a'];
+const PH_NAME = ['A (U1–U2)','B (V1–V2)','C (W1–W2)'];
+
+function drawWinding(){
+  const Z = +$('#wg-z').value, p2 = +$('#wg-p').value;
+  const box = $('#svg-winding'), info = $('#wg-info');
+  const q = Z/(p2*3), tau = Z/p2;
+  if(!Number.isInteger(q) || q < 1){
+    box.innerHTML = `<p style="color:var(--warn);padding:20px">⚠ Z=${Z}, 2p=${p2} → q=${fmt(q,2)} — дробное. Для однослойной обмотки такое сочетание не применяется.</p>`;
+    info.style.display = 'none';
+    return;
+  }
+  /* распределение пазов по зонам */
+  const slotPhase = [], slotSign = [];
+  for(let i=0; i<Z; i++){
+    const belt = Math.floor(i/q) % 6;
+    slotPhase.push(PHASES[belt].ph); slotSign.push(PHASES[belt].sign);
+  }
+  /* катушки: для каждой фазы соединяем + зону со следующей − зоной */
+  const coils = []; /* {from,to,ph} — пазы 0-based */
+  for(let ph=0; ph<3; ph++){
+    for(let g=0; g<p2/2 || g<1; g++){} /* noop */
+  }
+  const even = q % 2 === 0;
+  for(let start=0; start<Z; start+=q){
+    const belt = Math.floor(start/q) % 6;
+    if(PHASES[belt].sign !== 1) continue;
+    const ph = PHASES[belt].ph;
+    const minus = (start + 3*q) % Z; /* следующая зона той же фазы, обратная полярность */
+    for(let j=0; j<q; j++){
+      const from = start + j;
+      const to = even ? (minus + q - 1 - j) % Z : (minus + j) % Z; /* конц. либо равнокатушечная */
+      coils.push({from, to, ph});
+    }
+  }
+  /* SVG */
+  const dx = Z <= 24 ? 30 : Z <= 36 ? 22 : 17;
+  const W = 40 + Z*dx, slotY = 150, H = 240;
+  let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="Inter,sans-serif">`;
+  const sx = i => 30 + i*dx + dx/2;
+  /* дуги катушек */
+  coils.forEach(c => {
+    let a = sx(c.from), b = sx(c.to);
+    const col = PH_COLOR[c.ph];
+    if(c.to > c.from){
+      const span = c.to - c.from, h = 24 + span*(Z<=24?7:Z<=36?5:4);
+      s += `<path d="M ${a} ${slotY} C ${a} ${slotY-h}, ${b} ${slotY-h}, ${b} ${slotY}" fill="none" stroke="${col}" stroke-width="2.4"/>`;
+    } else { /* катушка через край развёртки */
+      const h = 40;
+      s += `<path d="M ${a} ${slotY} C ${a} ${slotY-h}, ${W} ${slotY-h}, ${W} ${slotY-h/2}" fill="none" stroke="${col}" stroke-width="2.4" stroke-dasharray="5 4"/>`;
+      s += `<path d="M 0 ${slotY-h/2} C 0 ${slotY-h}, ${b} ${slotY-h}, ${b} ${slotY}" fill="none" stroke="${col}" stroke-width="2.4" stroke-dasharray="5 4"/>`;
+    }
+  });
+  /* пазы */
+  for(let i=0; i<Z; i++){
+    const x = sx(i);
+    s += `<line x1="${x}" y1="${slotY}" x2="${x}" y2="${slotY+26}" stroke="${PH_COLOR[slotPhase[i]]}" stroke-width="5" stroke-linecap="round"/>`;
+    s += `<text x="${x}" y="${slotY+42}" fill="#a3937f" font-size="10" text-anchor="middle">${i+1}</text>`;
+    s += `<text x="${x}" y="${slotY+56}" fill="${PH_COLOR[slotPhase[i]]}" font-size="10" font-weight="700" text-anchor="middle">${slotSign[i]>0?'+':'–'}</text>`;
+  }
+  s += `<text x="${W/2}" y="${H-10}" fill="#6f6252" font-size="11" text-anchor="middle">пазы 1–${Z} · «+/–» — направление тока в зоне</text>`;
+  s += `</svg>`;
+  box.innerHTML = s;
+  /* инфо */
+  const spans = [...new Set(coils.filter(c=>c.to>c.from).map(c => c.to-c.from))].sort((a,b)=>a-b);
+  const phaseSlots = ph => slotPhase.map((p,i)=>p===ph?i+1:null).filter(Boolean).join(', ');
+  info.style.display = 'block';
+  info.innerHTML = `<b>Z=${Z}, 2p=${p2}:</b> q=${q}, τ=${tau} · тип: ${even?'однослойная концентрическая':'однослойная равнокатушечная (упрощённо)'} · шаги катушек: ${spans.map(x=>`1–${x+1}`).join(' и ')} · катушек на фазу: ${Z/6}<br>` +
+    `Пазы фазы A: ${phaseSlots(0)}<br>Пазы фазы B: ${phaseSlots(1)}<br>Пазы фазы C: ${phaseSlots(2)}`;
+}
+
+/* ============ матрицы «пазы × обороты» (по справочнику обмотчика) ============ */
+const MX_RPM3 = [3000,1500,1000,750,600,500,428,375,333,300,250,230,214,200,187,176,166,150,143,130,125,120,107,100,94];
+const MX3 = [
+ [9,[3000,1500,1000,750,600]],
+ [12,[3000,1500,1000,750,600,428]],
+ [15,[3000,1500,1000,750,428,375]],
+ [18,[3000,1500,1000,750,500,375,300]],
+ [24,[3000,1500,1000,750,600,500,375,300,214]],
+ [27,[3000,1500,1000,750,600,500,250,230,214,200]],
+ [30,[3000,1500,1000,750,600,500,375,300]],
+ [33,[3000,1500,750,600,500]],
+ [36,[3000,1500,1000,750,600,500,375,300,250,200,187,150,143]],
+ [41,[1000]],
+ [42,[3000,1500,1000,750,600,428,214]],
+ [45,[3000,1500,1000,750,600,500,428,375,300,250,150,120]],
+ [48,[3000,1500,1000,750,600,500,375,300,250,187,150,107]],
+ [51,[176,130]],
+ [54,[3000,1500,1000,750,600,500,375,333,300,250,230,214,200,187,166,125,100]],
+ [60,[3000,1500,1000,750,600,375,300,250,187,150,120]],
+ [63,[1000,428,214,143,107]],
+ [72,[3000,1500,1000,750,600,500,375,333,300,250,200,187,166,150,125,100,94]],
+ [75,[1500,750,600,300]],
+ [90,[1500,1000,750,600,500,375,300,250,200,187,166,150,125]]
+];
+const MX_RPM1 = [3000,1500,1000,750,600,500,428,375,333,300,250,200,166.6];
+const MX1 = [
+ [12,[3000,1500,1000]],
+ [16,[3000,1500,750]],
+ [18,[3000,1000]],
+ [24,[3000,1500,750,500]],
+ [28,[3000,1500,428]],
+ [30,[3000,1500,1000,600]],
+ [32,[3000,1500,750,333]],
+ [36,[3000,1500,1000,750,500,333]],
+ [40,[750]],
+ [42,[3000,428]],
+ [48,[3000,1500,1000,750,500,375,250]],
+ [54,[3000,1000,500,333]],
+ [60,[1500,1000,600,300,200]],
+ [72,[1500,1000,750,500,375,333,300,250,166.6]]
+];
+function renderMatrix(){
+  const mk = (rpms, rows, click) => {
+    let h = '<thead><tr><th>Пазов Z₁</th>' + rpms.map(r => `<th>${String(r).replace('.',',')}</th>`).join('') + '</tr></thead><tbody>';
+    rows.forEach(pair => {
+      const z = pair[0], list = pair[1];
+      h += `<tr><td>${z}</td>` + rpms.map(r => `<td>${list.indexOf(r) >= 0 ? (click ? `<button class="mx" title="Z₁=${z}, ${r} об/мин" onclick="openWindingFor(${z},${r})"></button>` : '<span class="mx1"></span>') : ''}</td>`).join('') + '</tr>';
+    });
+    return h + '</tbody>';
+  };
+  $('#tbl-mx3').innerHTML = mk(MX_RPM3, MX3, true);
+  $('#tbl-mx1').innerHTML = mk(MX_RPM1, MX1, false);
+}
+window.openWindingFor = (z, rpm) => {
+  const p2 = Math.round(6000 / rpm);
+  $('#wg-z').value = z; $('#wg-p').value = p2;
+  $$('#sch-pills button').forEach(b => b.classList.toggle('active', b.dataset.sub === 'sch-wind'));
+  document.querySelectorAll('#tab-schemes > .subtab').forEach(x => x.classList.toggle('active', x.id === 'sch-wind'));
+  drawWinding();
+  window.scrollTo({top:0});
+};
+$('#svg-star').innerHTML = svgTerm('y');
+$('#svg-delta').innerHTML = svgTerm('d');
+$('#svg-cap').innerHTML = svgCap();
+renderCapTable();
+drawWinding();
+renderMatrix();
+
+/* ============ хранилище ============ */
+let motors = LS.get('motors', []);
+const uid = () => Date.now() + Math.floor(Math.random()*1000);
+
+/* ============ мои двигатели ============ */
+const dlgMotor = $('#dlg-motor');
+function renderMy(){
+  const q = ($('#search-my').value||'').toLowerCase();
+  const list = motors.filter(m => !q || JSON.stringify(m).toLowerCase().includes(q));
+  $('#tbl-my tbody').innerHTML = list.map(m =>
+    `<tr><td><b>${esc(m.type)}</b></td><td class="num">${esc(m.kw||'')}</td><td class="num">${esc(m.p||'')}</td><td class="num">${esc(m.z||'')}</td><td class="num">${esc(m.turns||'')}</td><td class="num">${esc(m.wire||'')}</td><td>${esc(m.scheme||'')}</td><td>${esc(m.conn||'')}</td><td style="white-space:normal;max-width:220px">${esc(m.note||'')}</td>
+    <td style="white-space:nowrap"><button class="btn sm sec" onclick="editMotor(${m.id})">✏</button> <button class="btn sm danger" onclick="delMotor(${m.id})">✕</button></td></tr>`).join('');
+  $('#my-empty').style.display = list.length ? 'none' : 'block';
+}
+function openMotorDlg(m){
+  $('#m-id').value = m.id||''; $('#m-type').value = m.type||''; $('#m-kw').value = m.kw||'';
+  $('#m-p').value = m.p||''; $('#m-z').value = m.z||''; $('#m-turns').value = m.turns||'';
+  $('#m-wire').value = m.wire||''; $('#m-scheme').value = m.scheme||''; $('#m-conn').value = m.conn||'';
+  $('#m-note').value = m.note||'';
+  $('#dlg-motor-title').textContent = m.id ? 'Двигатель: правка' : 'Двигатель в мою базу';
+  dlgMotor.showModal();
+}
+window.editMotor = id => openMotorDlg(motors.find(m => m.id === id));
+window.delMotor = id => { if(confirm('Удалить запись?')){ motors = motors.filter(m => m.id !== id); LS.set('motors', motors); renderMy(); } };
+window.copyToMy = t => {
+  let r = AIR_WIND.find(x => x[0] === t) || AO2_WIND.find(x => x[0] === t);
+  let note = 'Из справочника (ориентировочно) — проверить при разборке';
+  if(!r && t.indexOf('4А') === 0){ r = AIR_WIND.find(x => x[0] === 'АИР' + t.slice(2)); note = 'По АИР-аналогу (ориентировочно) — проверить при разборке'; }
+  if(!r) return;
+  openMotorDlg({type:t, kw:r[1], p:r[2], z:r[3], turns:r[4], wire:r[5], scheme:r[6], conn:r[7], note});
+  goTab('ref');
+};
+$('#btn-add-motor').onclick = () => openMotorDlg({});
+$('#form-motor').addEventListener('submit', e => {
+  if(e.submitter && e.submitter.value === 'cancel') return;
+  if(!$('#m-type').value.trim()){ e.preventDefault(); return; }
+  const id = +$('#m-id').value || uid();
+  const m = {id, type:$('#m-type').value.trim(), kw:$('#m-kw').value, p:$('#m-p').value, z:$('#m-z').value,
+    turns:$('#m-turns').value, wire:$('#m-wire').value, scheme:$('#m-scheme').value, conn:$('#m-conn').value, note:$('#m-note').value};
+  const i = motors.findIndex(x => x.id === id);
+  if(i >= 0) motors[i] = m; else motors.push(m);
+  LS.set('motors', motors); renderMy();
+});
+$('#search-my').addEventListener('input', renderMy);
+
+/* ============ экспорт / импорт ============ */
+$('#btn-export').onclick = () => {
+  const data = {app:'namotka', version:2, exported:new Date().toISOString(), motors};
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'namotka-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(a.href);
+};
+$('#btn-import').onclick = () => $('#import-file').click();
+$('#import-file').addEventListener('change', e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const d = JSON.parse(r.result);
+      if(d.app !== 'namotka') throw new Error('не тот файл');
+      if(!confirm(`Импортировать копию от ${d.exported ? d.exported.slice(0,10) : '?'}? Текущая база двигателей будет заменена.`)) return;
+      motors = d.motors||[];
+      LS.set('motors', motors);
+      renderMy();
+      alert('Импорт выполнен ✓');
+    }catch(err){ alert('Ошибка импорта: ' + err.message); }
+    e.target.value = '';
+  };
+  r.readAsText(f);
+});
+
+/* ============ старт ============ */
+renderMy();
+if(location.hash){ const t = location.hash.slice(1); if($('#tab-'+t)) goTab(t); }
+
+</script>
+</body>
+</html>
