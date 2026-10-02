@@ -5,23 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>НАМОТКА — портал намотчика электродвигателей</title>
 <meta name="description" content="Личный портал намотчика: справочник обмоточных данных АИР, калькуляторы перемотки, схемы обмоток и соединений.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<meta name="theme-color" content="#0f0d0a">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Шрифти не блокують показ сторінки: без мережі одразу системний шрифт -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Russo+One&display=swap" media="print" onload="this.media='all'">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Russo+One&display=swap');
 :root{
   --bg:#0f0d0a; --bg2:#161210; --card:#1c1712; --card2:#221b15;
   --border:#2f2820; --border2:#3d3327;
-  --text:#ece3d6; --muted:#a3937f; --dim:#6f6252;
+  --text:#ece3d6; --muted:#a3937f; --dim:#93836f;
+  --ff:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; --ff-head:'Russo One','Inter',system-ui,sans-serif;
   --accent:#e08a3c; --accent2:#f2b56b; --accent-dim:rgba(224,138,60,.14);
   --ok:#58b368; --warn:#e0b13c; --danger:#e05c4a; --blue:#5aa7d6; --violet:#a98ce0;
   --radius:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.55;min-height:100vh}
-h1,h2,h3,.logo{font-family:'Russo One','Inter',sans-serif;font-weight:400;letter-spacing:.02em}
+body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:15px;line-height:1.55;min-height:100vh}
+h1,h2,h3,.logo{font-family:var(--ff-head);font-weight:400;letter-spacing:.02em}
 a{color:var(--accent2);text-decoration:none}
 a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+.linkbtn{background:none;border:none;padding:0;color:inherit;font:inherit;cursor:pointer;text-align:left}
 ::selection{background:var(--accent);color:#1a1006}
 
 /* ---------- header ---------- */
@@ -30,9 +39,9 @@ header{position:sticky;top:0;z-index:100;background:rgba(15,13,10,.92);backdrop-
 .logo{font-size:22px;color:var(--text);display:flex;align-items:center;gap:8px;white-space:nowrap}
 .logo .bolt{color:var(--accent);font-size:24px}
 .logo b{color:var(--accent)}
-.logo small{display:block;font-family:'Inter';font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.logo small{display:block;font-family:var(--ff);font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
 nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
-nav button{background:none;border:none;color:var(--muted);font:600 14px 'Inter';padding:9px 13px;border-radius:9px;cursor:pointer;transition:.15s}
+nav button{background:none;border:none;color:var(--muted);font:600 14px var(--ff);padding:9px 13px;border-radius:9px;cursor:pointer;transition:.15s}
 nav button:hover{color:var(--text);background:var(--card2)}
 nav button.active{color:var(--accent2);background:var(--accent-dim)}
 
@@ -42,8 +51,8 @@ section.tab{display:none;animation:fadeIn .25s ease}
 section.tab.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .grid{display:grid;gap:14px}
-.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-.g3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr))}
 .card{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);border-radius:var(--radius);padding:18px}
 .card h3{color:var(--accent2);font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .card p{color:var(--muted);font-size:14px}
@@ -60,19 +69,19 @@ section.tab.active{display:block}
  linear-gradient(160deg,#1d1610,#12100d)}
 .hero h1{font-size:clamp(26px,5vw,44px);line-height:1.15}
 .hero h1 span{color:var(--accent)}
-.hero .tagline{color:var(--accent2);font-family:'Russo One';font-size:clamp(13px,2.2vw,17px);letter-spacing:.14em;text-transform:uppercase;margin:14px 0 8px}
+.hero .tagline{color:var(--accent2);font-family:var(--ff-head);font-size:clamp(13px,2.2vw,17px);letter-spacing:.14em;text-transform:uppercase;margin:14px 0 8px}
 .hero p.lead{color:var(--muted);max-width:640px;font-size:15px}
 .coil{position:absolute;right:-40px;top:-40px;opacity:.16;pointer-events:none}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px}
-.tile{cursor:pointer;border:1px solid var(--border);border-radius:12px;padding:18px 16px;background:linear-gradient(160deg,var(--card),var(--bg2));transition:.18s}
-.tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tile{display:block;color:inherit;cursor:pointer;border:1px solid var(--border);border-radius:12px;padding:18px 16px;background:linear-gradient(160deg,var(--card),var(--bg2));transition:.18s}
+.tile:hover{border-color:var(--accent);transform:translateY(-2px);text-decoration:none}
 .tile .ico{font-size:26px}
 .tile h4{margin:8px 0 4px;font-size:15px}
 .tile p{font-size:12.5px;color:var(--muted)}
 
 /* ---------- pills / subtabs ---------- */
 .pills{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 16px}
-.pills button{background:var(--card);border:1px solid var(--border);color:var(--muted);font:600 13px 'Inter';padding:7px 14px;border-radius:20px;cursor:pointer;transition:.15s}
+.pills button{background:var(--card);border:1px solid var(--border);color:var(--muted);font:600 13px var(--ff);padding:7px 14px;border-radius:20px;cursor:pointer;transition:.15s}
 .pills button:hover{color:var(--text);border-color:var(--border2)}
 .pills button.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent2)}
 .subtab{display:none}
@@ -85,16 +94,16 @@ th{background:var(--card2);color:var(--accent2);text-align:left;padding:9px 12px
 td{padding:8px 12px;border-top:1px solid var(--border);white-space:nowrap}
 tbody tr:hover{background:rgba(224,138,60,.05)}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-.search{width:100%;max-width:340px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 13px;font:500 14px 'Inter';margin-bottom:12px}
+.search{width:100%;max-width:340px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 13px;font:500 14px var(--ff);margin-bottom:12px}
 .search:focus{outline:none;border-color:var(--accent)}
 
 /* ---------- forms / calculators ---------- */
 label.f{display:block;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 4px}
-input[type=text],input[type=number],input[type=date],input[type=tel],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 12px;font:500 14.5px 'Inter'}
+input[type=text],input[type=number],input[type=date],input[type=tel],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 12px;font:500 14.5px var(--ff)}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
 textarea{resize:vertical;min-height:64px}
 .row{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
-.btn{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(160deg,var(--accent),#c9752c);color:#1a1006;border:none;border-radius:9px;padding:10px 18px;font:700 14px 'Inter';cursor:pointer;transition:.15s;margin-top:12px}
+.btn{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(160deg,var(--accent),#c9752c);color:#1a1006;border:none;border-radius:9px;padding:10px 18px;font:700 14px var(--ff);cursor:pointer;transition:.15s;margin-top:12px}
 .btn:hover{filter:brightness(1.1)}
 .btn.sec{background:var(--card2);color:var(--text);border:1px solid var(--border2)}
 .btn.sm{padding:6px 12px;font-size:12.5px;margin-top:0}
@@ -107,6 +116,9 @@ textarea{resize:vertical;min-height:64px}
 /* ---------- schemes ---------- */
 .scheme-box{background:#14110d;border:1px solid var(--border);border-radius:10px;padding:14px;overflow-x:auto;text-align:center}
 .scheme-box svg{max-width:100%;height:auto}
+/* розгортка не стискається до нечитабельних цифр — гортається вбік */
+#svg-winding{text-align:left}
+#svg-winding svg{max-width:none}
 .legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:8px;font-size:13px;color:var(--muted)}
 .legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle}
 .mxt th,.mxt td{padding:4px 7px;font-size:11.5px;text-align:center;white-space:nowrap}
@@ -132,7 +144,7 @@ textarea{resize:vertical;min-height:64px}
 .stat .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .order-card{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
 .order-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.order-num{font-family:'Russo One';color:var(--accent2);font-size:15px}
+.order-num{font-family:var(--ff-head);color:var(--accent2);font-size:15px}
 .order-title{font-weight:700}
 .order-meta{font-size:13px;color:var(--muted);margin-top:4px}
 .order-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
@@ -143,7 +155,7 @@ textarea{resize:vertical;min-height:64px}
 .st-done{background:rgba(163,147,127,.13);color:var(--muted);border:1px solid var(--border2)}
 .st-cancel{background:rgba(224,92,74,.12);color:var(--danger);border:1px solid rgba(224,92,74,.4)}
 .chipbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.chipbar button{background:var(--card);border:1px solid var(--border);color:var(--muted);font:600 12.5px 'Inter';padding:6px 12px;border-radius:18px;cursor:pointer}
+.chipbar button{background:var(--card);border:1px solid var(--border);color:var(--muted);font:600 12.5px var(--ff);padding:6px 12px;border-radius:18px;cursor:pointer}
 .chipbar button.active{border-color:var(--accent);color:var(--accent2);background:var(--accent-dim)}
 .wdata{background:rgba(90,167,214,.06);border:1px dashed rgba(90,167,214,.35);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#bcd6e8}
 .low{color:var(--danger);font-weight:700}
@@ -163,7 +175,25 @@ footer b{color:var(--muted)}
   main{padding:14px 10px 50px}
   .hero{padding:30px 18px}
 }
-@media print{ body *{visibility:hidden} }
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#fff;color:#111;font-size:12px}
+  header,footer,nav,.pills,.chipbar,.btn,.search,dialog,.tiles,.hero .coil,#backup-note{display:none!important}
+  main{max-width:none;padding:0}
+  section.tab:not(.active),.subtab:not(.active){display:none!important}
+  .card,.hero,.tblwrap{background:#fff!important;border:1px solid #bbb;box-shadow:none;break-inside:avoid}
+  .card h3,.section-title,th{color:#111}
+  .card p,.hint,.section-sub,td{color:#222}
+  th{background:#eee;position:static}
+  .tblwrap{overflow:visible}
+  table{min-width:0}
+  .scheme-box{background:#14110d;overflow:visible}
+  #svg-winding svg{max-width:100%}
+  .result{border-color:#888;background:#f6f6f6;color:#111}
+  .result .big{color:#0a6b1f}
+  input,select,textarea{background:#fff!important;color:#111!important;border-color:#bbb!important}
+  .wdata{background:#eef5fb;color:#123;border-color:#9bbad3}
+}
 </style>
 </head>
 <body>
@@ -193,12 +223,12 @@ footer b{color:var(--muted)}
     </svg>
     <h1>Портал <span>намотчика</span><br>электродвигателей</h1>
     <div class="tagline">Перемотка · Расчёты · Схемы · Справочник</div>
-    <p class="lead">Обмоточные данные, таблицы проводов, калькуляторы перемотки и схемы соединений — в одном месте, работает без доступа к интернету.</p>
+    <p class="lead">Обмоточные данные, таблицы проводов, калькуляторы перемотки и схемы соединений — в одном месте. После первого открытия работает и без интернета.</p>
   </div>
   <div class="tiles">
-    <div class="tile" data-go="ref"><div class="ico">📖</div><h4>Справочник</h4><p>Данные АИР, 4А и АО2, провода ПЭТВ, подшипники, изоляция + личная база двигателей</p></div>
-    <div class="tile" data-go="calc"><div class="ico">🧮</div><h4>Расчёты</h4><p>Пересчёт на другое напряжение, подбор провода, конденсаторы, ток, сопротивление</p></div>
-    <div class="tile" data-go="schemes"><div class="ico">🔌</div><h4>Схемы</h4><p>Звезда/треугольник, маркировка выводов, конденсаторный пуск, развёртка обмотки</p></div>
+    <a class="tile" href="#ref"><div class="ico" aria-hidden="true">📖</div><h4>Справочник</h4><p>Данные АИР, 4А и АО2, провода ПЭТВ, подшипники, изоляция + личная база двигателей</p></a>
+    <a class="tile" href="#calc"><div class="ico" aria-hidden="true">🧮</div><h4>Расчёты</h4><p>Пересчёт на другое напряжение, подбор провода, конденсаторы, ток, сопротивление</p></a>
+    <a class="tile" href="#schemes"><div class="ico" aria-hidden="true">🔌</div><h4>Схемы</h4><p>Звезда/треугольник, маркировка выводов, конденсаторный пуск, развёртка обмотки</p></a>
   </div>
   <div class="grid g2" style="margin-top:14px">
     <div class="card">
@@ -250,9 +280,9 @@ footer b{color:var(--muted)}
   <div class="subtab" id="ref-wire">
     <div class="card" style="margin-bottom:12px">
       <div class="row">
-        <div><label class="f">Плотность тока, А/мм²</label>
+        <div><label class="f" for="wire-j">Плотность тока, А/мм²</label>
           <select id="wire-j"><option>4</option><option selected>4.5</option><option>5</option><option>5.5</option><option>6</option><option>6.5</option></select></div>
-        <div><label class="f">Поиск по диаметру</label><input type="text" class="search" id="search-wire" placeholder="0.5" style="margin:0;max-width:none"></div>
+        <div><label class="f" for="search-wire">Поиск по диаметру</label><input type="text" class="search" id="search-wire" placeholder="0.5" style="margin:0;max-width:none"></div>
       </div>
       <p class="hint">Для закрытых двигателей (IP44/IP54) обычно берут 4,5–5,5 А/мм², для продуваемых — до 6,5.</p>
     </div>
@@ -328,7 +358,8 @@ footer b{color:var(--muted)}
 
   <div class="subtab" id="ref-my">
     <p class="section-sub" style="margin-bottom:10px">Личная база проверенных обмоточных данных. Пополняется вручную или из строк справочника (⭐). Данные хранятся в этом браузере — регулярно выполняйте экспорт резервной копии.</p>
-    <button class="btn sm" id="btn-add-motor">+ Добавить двигатель</button> <button class="btn sm sec" id="btn-export">💾 Экспорт</button> <button class="btn sm sec" id="btn-import">📂 Импорт</button><input type="file" id="import-file" accept=".json" style="display:none">
+    <button class="btn sm" id="btn-add-motor">+ Добавить двигатель</button> <button class="btn sm sec" id="btn-export">💾 Экспорт</button> <button class="btn sm sec" id="btn-import">📂 Импорт</button> <button class="btn sm sec" id="btn-undo-import" hidden>↩ Вернуть базу до импорта</button><input type="file" id="import-file" accept=".json,application/json" style="display:none">
+    <div class="warn-note" id="backup-note" hidden><span id="backup-note-text"></span> Браузер может стереть данные сайта (Safari на iPhone — через 7 дней без посещений). Сделайте «💾 Экспорт» и сохраните файл. На iPhone надёжнее добавить сайт на экран «Домой» и работать оттуда.</div>
     <input class="search" id="search-my" placeholder="Поиск по моей базе..." style="margin-top:12px">
     <div class="tblwrap"><table id="tbl-my">
       <thead><tr><th>Тип</th><th class="num">кВт</th><th class="num">2p</th><th class="num">Z₁</th><th class="num">Витков</th><th class="num">Провод</th><th>Схема</th><th>Соед.</th><th>Заметка</th><th></th></tr></thead>
@@ -347,10 +378,10 @@ footer b{color:var(--muted)}
     <div class="card">
       <h3>🔁 Пересчёт обмотки на другое напряжение</h3>
       <div class="row">
-        <div><label class="f">Витков сейчас, W₁</label><input type="number" id="cv-w1" placeholder="96"></div>
-        <div><label class="f">Напряжение было, U₁</label><input type="number" id="cv-u1" value="380"></div>
-        <div><label class="f">Нужно, U₂</label><input type="number" id="cv-u2" value="220"></div>
-        <div><label class="f">Провод был, Ø мм</label><input type="number" id="cv-d1" step="0.01" placeholder="0.45"></div>
+        <div><label class="f" for="cv-w1">Витков сейчас, W₁</label><input type="number" id="cv-w1" placeholder="96"></div>
+        <div><label class="f" for="cv-u1">Напряжение было, U₁</label><input type="number" id="cv-u1" value="380"></div>
+        <div><label class="f" for="cv-u2">Нужно, U₂</label><input type="number" id="cv-u2" value="220"></div>
+        <div><label class="f" for="cv-d1">Провод был, Ø мм</label><input type="number" id="cv-d1" step="0.01" placeholder="0.45"></div>
       </div>
       <button class="btn" onclick="calcVolt()">Рассчитать</button>
       <div class="result" id="res-volt"></div>
@@ -360,9 +391,9 @@ footer b{color:var(--muted)}
     <div class="card">
       <h3>📏 Провод: диаметр → сечение → ток</h3>
       <div class="row">
-        <div><label class="f">Диаметр по меди, мм</label><input type="number" id="cw-d" step="0.01" placeholder="0.5"></div>
-        <div><label class="f">Проводов параллельно</label><input type="number" id="cw-n" value="1" min="1"></div>
-        <div><label class="f">Плотность J, А/мм²</label><select id="cw-j"><option>4</option><option selected>4.5</option><option>5</option><option>5.5</option><option>6</option><option>6.5</option></select></div>
+        <div><label class="f" for="cw-d">Диаметр по меди, мм</label><input type="number" id="cw-d" step="0.01" placeholder="0.5"></div>
+        <div><label class="f" for="cw-n">Проводов параллельно</label><input type="number" id="cw-n" value="1" min="1"></div>
+        <div><label class="f" for="cw-j">Плотность J, А/мм²</label><select id="cw-j"><option>4</option><option selected>4.5</option><option>5</option><option>5.5</option><option>6</option><option>6.5</option></select></div>
       </div>
       <button class="btn" onclick="calcWire()">Рассчитать</button>
       <div class="result" id="res-wire"></div>
@@ -372,7 +403,7 @@ footer b{color:var(--muted)}
       <h3>🔀 Замена провода (подбор эквивалента)</h3>
       <p>Подбор эквивалентного сечения из нескольких параллельных проводов.</p>
       <div class="row">
-        <div><label class="f">Нужный диаметр, мм</label><input type="number" id="cr-d" step="0.01" placeholder="0.9"></div>
+        <div><label class="f" for="cr-d">Нужный диаметр, мм</label><input type="number" id="cr-d" step="0.01" placeholder="0.9"></div>
       </div>
       <button class="btn" onclick="calcReplace()">Подобрать варианты</button>
       <div class="result" id="res-replace"></div>
@@ -382,10 +413,10 @@ footer b{color:var(--muted)}
     <div class="card">
       <h3>⚡ Ток двигателя</h3>
       <div class="row">
-        <div><label class="f">Мощность, кВт</label><input type="number" id="ci-p" step="0.01" placeholder="1.5"></div>
-        <div><label class="f">Напряжение, В</label><select id="ci-u"><option>220</option><option selected>380</option><option>660</option></select></div>
-        <div><label class="f">КПД, %</label><input type="number" id="ci-eff" value="80"></div>
-        <div><label class="f">cos φ</label><input type="number" id="ci-cos" step="0.01" value="0.8"></div>
+        <div><label class="f" for="ci-p">Мощность, кВт</label><input type="number" id="ci-p" step="0.01" placeholder="1.5"></div>
+        <div><label class="f" for="ci-u">Напряжение, В</label><select id="ci-u"><option>220</option><option selected>380</option><option>660</option></select></div>
+        <div><label class="f" for="ci-eff">КПД, %</label><input type="number" id="ci-eff" value="80"></div>
+        <div><label class="f" for="ci-cos">cos φ</label><input type="number" id="ci-cos" step="0.01" value="0.8"></div>
       </div>
       <button class="btn" onclick="calcCurrent()">Рассчитать</button>
       <div class="result" id="res-current"></div>
@@ -395,21 +426,21 @@ footer b{color:var(--muted)}
     <div class="card">
       <h3>🔋 Конденсатор для однофазного включения</h3>
       <div class="row">
-        <div><label class="f">Считать по</label><select id="cc-mode"><option value="p">Мощности двигателя</option><option value="i">Номинальному току</option></select></div>
-        <div><label class="f">кВт / А</label><input type="number" id="cc-val" step="0.01" placeholder="1.1"></div>
-        <div><label class="f">Схема</label><select id="cc-sch"><option value="d" selected>Треугольник (220 В)</option><option value="y">Звезда</option></select></div>
+        <div><label class="f" for="cc-mode">Считать по</label><select id="cc-mode"><option value="p">Мощности двигателя</option><option value="i380">Току при 380 В (Y) — меньшее число на табличке</option><option value="i220">Току при 220 В (Δ) — большее число на табличке</option></select></div>
+        <div><label class="f" id="cc-val-label" for="cc-val">Мощность, кВт</label><input type="number" id="cc-val" step="0.01" placeholder="1.1"></div>
+        <div><label class="f" for="cc-sch">Схема</label><select id="cc-sch"><option value="d" selected>Треугольник (220 В)</option><option value="y">Звезда</option></select></div>
       </div>
       <button class="btn" onclick="calcCap()">Рассчитать</button>
       <div class="result" id="res-cap"></div>
-      <p class="hint">Cраб = 4800·I/U (Δ) или 2800·I/U (Y). Пусковой — в 2,5–3 раза больше рабочего, включается через кнопку на 2–3 секунды. Конденсаторы — плёночные (МБГО, МБГЧ, CBB60) на напряжение не ниже 450 В.</p>
+      <p class="hint">Cраб = 4800·I/U (Δ) или 2800·I/U (Y), где I — номинальный ток в выбранной схеме: для Δ — ток при 220 В (на табличке 6,1/3,5 А это 6,1 А), для Y — при 380 В. Калькулятор всегда показывает ток, принятый в расчёт. Пусковой — в 2,5–3 раза больше рабочего, включается через кнопку на 2–3 секунды. Конденсаторы — плёночные (МБГО, МБГЧ, CBB60) на напряжение не ниже 450 В.</p>
     </div>
 
     <div class="card">
       <h3>🧵 Сопротивление обмотки</h3>
       <div class="row">
-        <div><label class="f">Длина провода, м</label><input type="number" id="cres-l" placeholder="120"></div>
-        <div><label class="f">Диаметр, мм</label><input type="number" id="cres-d" step="0.01" placeholder="0.45"></div>
-        <div><label class="f">Температура, °C</label><input type="number" id="cres-t" value="20"></div>
+        <div><label class="f" for="cres-l">Длина провода, м</label><input type="number" id="cres-l" placeholder="120"></div>
+        <div><label class="f" for="cres-d">Диаметр, мм</label><input type="number" id="cres-d" step="0.01" placeholder="0.45"></div>
+        <div><label class="f" for="cres-t">Температура, °C</label><input type="number" id="cres-t" value="20"></div>
       </div>
       <button class="btn" onclick="calcRes()">Рассчитать</button>
       <div class="result" id="res-res"></div>
@@ -419,8 +450,8 @@ footer b{color:var(--muted)}
     <div class="card">
       <h3>🧮 Помощник по пазам (q, τ, шаг)</h3>
       <div class="row">
-        <div><label class="f">Пазов статора, Z₁</label><input type="number" id="cz-z" placeholder="24"></div>
-        <div><label class="f">Полюсов, 2p</label><select id="cz-p"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></div>
+        <div><label class="f" for="cz-z">Пазов статора, Z₁</label><input type="number" id="cz-z" placeholder="24"></div>
+        <div><label class="f" for="cz-p">Полюсов, 2p</label><select id="cz-p"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></div>
       </div>
       <button class="btn" onclick="calcSlots()">Рассчитать</button>
       <div class="result" id="res-slots"></div>
@@ -431,9 +462,9 @@ footer b{color:var(--muted)}
       <h3>📐 Оценка мощности по сердечнику</h3>
       <p>Заводская табличка отсутствует? Оценка мощности по размерам сердечника статора.</p>
       <div class="row">
-        <div><label class="f">Внутр. Ø статора D, мм</label><input type="number" id="cp-d" placeholder="80"></div>
-        <div><label class="f">Длина железа l, мм</label><input type="number" id="cp-l" placeholder="100"></div>
-        <div><label class="f">Полюсов, 2p</label><select id="cp-p"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></div>
+        <div><label class="f" for="cp-d">Внутр. Ø статора D, мм</label><input type="number" id="cp-d" placeholder="80"></div>
+        <div><label class="f" for="cp-l">Длина железа l, мм</label><input type="number" id="cp-l" placeholder="100"></div>
+        <div><label class="f" for="cp-p">Полюсов, 2p</label><select id="cp-p"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></div>
       </div>
       <button class="btn" onclick="calcPower()">Оценить</button>
       <div class="result" id="res-power"></div>
@@ -508,8 +539,8 @@ footer b{color:var(--muted)}
     <div class="card">
       <h3>🌀 Генератор развёртки однослойной обмотки</h3>
       <div class="row">
-        <div><label class="f">Пазов статора, Z₁</label><select id="wg-z"><option>9</option><option>12</option><option>15</option><option>16</option><option>18</option><option selected>24</option><option>27</option><option>28</option><option>30</option><option>32</option><option>33</option><option>36</option><option>40</option><option>41</option><option>42</option><option>45</option><option>48</option><option>51</option><option>54</option><option>60</option><option>63</option><option>72</option><option>75</option><option>90</option></select></div>
-        <div><label class="f">Полюсов, 2p</label><select id="wg-p"><option>2</option><option selected>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>14</option><option>16</option><option>18</option><option>20</option><option>24</option><option>26</option><option>28</option><option>30</option><option>32</option><option>34</option><option>36</option><option>40</option><option>42</option><option>46</option><option>48</option><option>50</option><option>56</option><option>60</option><option>64</option></select></div>
+        <div><label class="f" for="wg-z">Пазов статора, Z₁</label><select id="wg-z"><option>9</option><option>12</option><option>15</option><option>16</option><option>18</option><option selected>24</option><option>27</option><option>28</option><option>30</option><option>32</option><option>33</option><option>36</option><option>40</option><option>41</option><option>42</option><option>45</option><option>48</option><option>51</option><option>54</option><option>60</option><option>63</option><option>72</option><option>75</option><option>90</option></select></div>
+        <div><label class="f" for="wg-p">Полюсов, 2p</label><select id="wg-p"><option>2</option><option selected>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>14</option><option>16</option><option>18</option><option>20</option><option>24</option><option>26</option><option>28</option><option>30</option><option>32</option><option>34</option><option>36</option><option>40</option><option>42</option><option>46</option><option>48</option><option>50</option><option>56</option><option>60</option><option>64</option></select></div>
         <div style="align-self:end"><button class="btn" style="margin-top:0" onclick="drawWinding()">Построить</button></div>
       </div>
       <div class="scheme-box" id="svg-winding" style="margin-top:14px"></div>
@@ -535,23 +566,23 @@ footer b{color:var(--muted)}
   <form method="dialog" id="form-motor">
     <input type="hidden" id="m-id">
     <div class="row">
-      <div><label class="f">Тип *</label><input type="text" id="m-type" placeholder="АИР80В4" required></div>
-      <div><label class="f">кВт</label><input type="number" id="m-kw" step="0.01"></div>
-      <div><label class="f">2p</label><select id="m-p"><option></option><option>2</option><option>4</option><option>6</option><option>8</option></select></div>
+      <div><label class="f" for="m-type">Тип *</label><input type="text" id="m-type" placeholder="АИР80В4" required></div>
+      <div><label class="f" for="m-kw">кВт</label><input type="number" id="m-kw" step="0.01"></div>
+      <div><label class="f" for="m-p">2p</label><select id="m-p"><option></option><option>2</option><option>4</option><option>6</option><option>8</option></select></div>
     </div>
     <div class="row">
-      <div><label class="f">Пазов Z₁</label><input type="number" id="m-z"></div>
-      <div><label class="f">Витков в пазу</label><input type="text" id="m-turns"></div>
-      <div><label class="f">Провод, мм</label><input type="text" id="m-wire"></div>
+      <div><label class="f" for="m-z">Пазов Z₁</label><input type="number" id="m-z"></div>
+      <div><label class="f" for="m-turns">Витков в пазу</label><input type="text" id="m-turns"></div>
+      <div><label class="f" for="m-wire">Провод, мм</label><input type="text" id="m-wire"></div>
     </div>
     <div class="row">
-      <div><label class="f">Схема / шаг</label><input type="text" id="m-scheme" placeholder="1сл. конц., 1-8, 2-7"></div>
-      <div><label class="f">Соединение</label><select id="m-conn"><option></option><option>Y</option><option>Δ</option><option>Y/Δ</option></select></div>
+      <div><label class="f" for="m-scheme">Схема / шаг</label><input type="text" id="m-scheme" placeholder="1сл. конц., 1-8, 2-7"></div>
+      <div><label class="f" for="m-conn">Соединение</label><select id="m-conn"><option></option><option>Y</option><option>Δ</option><option>Y/Δ</option></select></div>
     </div>
-    <label class="f">Заметка</label>
+    <label class="f" for="m-note">Заметка</label>
     <textarea id="m-note" placeholder="Проверено в работе, намотка в 2 провода Ø0,5"></textarea>
     <div class="dlg-actions">
-      <button class="btn sec" value="cancel" formnovalidate>Отмена</button>
+      <button type="button" class="btn sec" id="m-cancel">Отмена</button>
       <button class="btn" value="ok">Сохранить</button>
     </div>
   </form>
@@ -760,14 +791,18 @@ const BEARINGS = [
 ];
 
 /* ============ router ============ */
-function goTab(name){
+function showTab(name){
+  if(!$('#tab-' + name)) name = 'home';
   $$('#mainnav button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
   $$('section.tab').forEach(s => s.classList.toggle('active', s.id === 'tab-' + name));
-  location.hash = name;
   window.scrollTo({top:0});
 }
+/* Вкладка — у адресі: «Назад/Вперёд» і посилання #calc перемикають її через hashchange */
+function goTab(name){
+  if(location.hash.slice(1) === name) showTab(name); else location.hash = name;
+}
+window.addEventListener('hashchange', () => showTab(location.hash.slice(1) || 'home'));
 $$('#mainnav button').forEach(b => b.onclick = () => goTab(b.dataset.tab));
-$$('.tile[data-go]').forEach(t => t.onclick = () => goTab(t.dataset.go));
 function initSubtabs(pillsId){
   $$('#'+pillsId+' button').forEach(b => b.onclick = () => {
     $$('#'+pillsId+' button').forEach(x => x.classList.toggle('active', x === b));
@@ -829,23 +864,29 @@ if(!COL_MODES[passCols]) passCols = 'pass';
 function motorCells(m){
   const I = m.eff !== '' ? m.p*1000/(1.732*380*(m.eff/100)*m.cos) : null;
   const w = m.w, g = geom(m.t, m.p2, m.p);
-  return [`<b>${m.t}</b>`, fmt(m.p), m.p2, m.n, m.eff!==''?fmt(m.eff,1):'—', m.cos!==''?fmt(m.cos):'—',
+  return [`<button type="button" class="linkbtn" title="Карточка двигателя"><b>${m.t}</b></button>`, fmt(m.p), m.p2, m.n, m.eff!==''?fmt(m.eff,1):'—', m.cos!==''?fmt(m.cos):'—',
    `<b style="color:var(--accent2)">${I?fmt(I,1):'—'}</b>`, g?g.D:'—', g?g.dn:'—', g&&g.l?g.l:'—',
    w?w[3]:'—', w?w[4]:'—', w?w[5]:'—', w?w[6]:'—', w?w[7]:'—', w?fmt(w[8],1):'—',
-   w?`<button class="btn sm sec" title="Скопировать в мою базу" onclick="event.stopPropagation();copyToMy('${m.t}')">⭐</button>`:''];
+   w?`<button class="btn sm sec" title="Скопировать в мою базу" aria-label="Скопировать ${m.t} в мою базу" data-copy="${m.t}">⭐</button>`:''];
 }
 function renderPass(){
   const idx = COL_MODES[passCols];
   $('#tbl-pass thead').innerHTML = '<tr>' + idx.map(i => `<th class="${PASS_COLS[i].c||''}" title="${PASS_COLS[i].f||''}">${PASS_COLS[i].h}</th>`).join('') + '</tr>';
   $('#tbl-pass tbody').innerHTML = motorRows().map(m => {
     const cells = motorCells(m);
-    return `<tr onclick="showMotorCard('${m.t}')">` + idx.map(i => `<td class="${PASS_COLS[i].c||''}">${cells[i]}</td>`).join('') + '</tr>';
+    return `<tr data-t="${m.t}">` + idx.map(i => `<td class="${PASS_COLS[i].c||''}">${cells[i]}</td>`).join('') + '</tr>';
   }).join('');
   const q = ($('#search-pass').value || '').toLowerCase().replace(',','.');
   if(q) $$('#tbl-pass tbody tr').forEach(tr => {
     tr.style.display = tr.textContent.toLowerCase().replace(/,/g,'.').includes(q) ? '' : 'none';
   });
 }
+$('#tbl-pass tbody').addEventListener('click', e => {
+  const copy = e.target.closest('[data-copy]');
+  if(copy) return copyToMy(copy.dataset.copy);
+  const tr = e.target.closest('tr[data-t]');
+  if(tr) showMotorCard(tr.dataset.t);
+});
 window.showMotorCard = t => {
   const m = motorRows().find(x => x.t === t);
   if(!m) return;
@@ -941,22 +982,27 @@ function calcCurrent(){
   showRes('#res-current', `Номинальный ток: <span class="big">${fmt(I,1)} А</span><br><span style="color:var(--muted);font-size:13px">Пусковой обычно в 5–7 раз больше: ~${fmt(I*5,0)}–${fmt(I*7,0)} А. Уставка теплового реле — ${fmt(I*1.1,1)} А (110%).</span>`);
 }
 
+const CC_LABEL = {p:'Мощность, кВт', i380:'Ток при 380 В (Y), А', i220:'Ток при 220 В (Δ), А'};
+$('#cc-mode').addEventListener('change', e => { $('#cc-val-label').textContent = CC_LABEL[e.target.value]; });
 function calcCap(){
   const mode = $('#cc-mode').value, v = +$('#cc-val').value, sch = $('#cc-sch').value;
   if(!v) return showRes('#res-cap','Укажи мощность или ток.');
-  const I = mode==='i' ? v : v*1000/(1.732*380*0.72); /* оценка номинального тока при 380 В */
+  /* ток при 380 В (звезда): по мощности — оценка, по табличке — как есть или из тока при 220 В */
+  const I380 = mode==='p' ? v*1000/(1.732*380*0.72) : mode==='i380' ? v : v/1.732;
   const k = sch==='d' ? 4800 : 2800;
-  const Iw = sch==='d' ? I*1.73 : I; /* в треугольнике на 220 В ток выше */
-  const C = k*Iw/220;
+  const I = sch==='d' ? I380*1.732 : I380; /* в треугольнике на 220 В ток в √3 раз больше */
+  const C = k*I/220;
   showRes('#res-cap',
     `Рабочий конденсатор: <span class="big">${fmt(C,0)} мкФ</span><br>` +
     `Пусковой (добавочный): <b>${fmt(C*2.5,0)}–${fmt(C*3,0)} мкФ</b>, включать на 2–3 с через кнопку<br>` +
-    `<span style="color:var(--muted);font-size:13px">Напряжение конденсаторов — не ниже 450 В. ${mode==='p'?`Принят ток ~${fmt(I,1)} А (по 380 В). `:''}Окончательно ёмкость уточняется по нагреву и току фаз под нагрузкой.</span>`);
+    `<span style="color:var(--muted);font-size:13px">Принят в расчёт ток <b>${fmt(I,2)} А</b> (${sch==='d'?'треугольник, 220 В':'звезда, 380 В'})${mode==='p'?' — оценка по мощности':''}. Напряжение конденсаторов — не ниже 450 В. Окончательно ёмкость уточняется по нагреву и току фаз под нагрузкой.</span>`);
 }
 
 function calcRes(){
-  const L = +$('#cres-l').value, d = +$('#cres-d').value, t = +$('#cres-t').value||20;
+  const L = +$('#cres-l').value, d = +$('#cres-d').value, tRaw = $('#cres-t').value.trim();
+  const t = tRaw === '' ? 20 : +tRaw; /* 0 °C — допустимое значение, а не «пусто» */
   if(!L || !d) return showRes('#res-res','Укажи длину и диаметр.');
+  if(!Number.isFinite(t)) return showRes('#res-res','Проверь температуру.');
   const S = wireS(d), R20 = RHO_CU*L/S, Rt = R20*(1+0.004*(t-20));
   showRes('#res-res', `R при 20 °C: <span class="big">${fmt(R20,2)} Ом</span>` + (t!==20?`<br>R при ${t} °C: <b>${fmt(Rt,2)} Ом</b>`:'') + `<br><span style="color:var(--muted);font-size:13px">Сечение ${fmt(S,3)} мм². Вес этого провода: ${fmt(S*8.9*L/1000,2)} кг.</span>`);
 }
@@ -1164,7 +1210,7 @@ function renderMatrix(){
     let h = '<thead><tr><th>Пазов Z₁</th>' + rpms.map(r => `<th>${String(r).replace('.',',')}</th>`).join('') + '</tr></thead><tbody>';
     rows.forEach(pair => {
       const z = pair[0], list = pair[1];
-      h += `<tr><td>${z}</td>` + rpms.map(r => `<td>${list.indexOf(r) >= 0 ? (click ? `<button class="mx" title="Z₁=${z}, ${r} об/мин" onclick="openWindingFor(${z},${r})"></button>` : '<span class="mx1"></span>') : ''}</td>`).join('') + '</tr>';
+      h += `<tr><td>${z}</td>` + rpms.map(r => `<td>${list.indexOf(r) >= 0 ? (click ? `<button class="mx" title="Z₁=${z}, ${r} об/мин" aria-label="Развёртка: Z₁=${z}, ${r} об/мин" onclick="openWindingFor(${z},${r})"></button>` : '<span class="mx1"></span>') : ''}</td>`).join('') + '</tr>';
     });
     return h + '</tbody>';
   };
@@ -1187,8 +1233,45 @@ drawWinding();
 renderMatrix();
 
 /* ============ хранилище ============ */
-let motors = LS.get('motors', []);
-const uid = () => Date.now() + Math.floor(Math.random()*1000);
+const MOTOR_FIELDS = {type:80, kw:12, p:4, z:6, turns:40, wire:60, scheme:120, conn:8, note:1000};
+/* Запис із файлу чи localStorage — лише відомі поля, рядки обмеженої довжини, числовий id */
+function normalizeMotors(list){
+  if(!Array.isArray(list)) throw new Error('в файле нет списка двигателей');
+  const seen = new Set();
+  return list.filter(x => x && typeof x === 'object').map(x => {
+    const m = {};
+    for(const [k, max] of Object.entries(MOTOR_FIELDS)) m[k] = x[k] == null ? '' : String(x[k]).slice(0, max);
+    let id = Number(x.id);
+    if(!Number.isSafeInteger(id) || id <= 0 || seen.has(id)) id = uid();
+    seen.add(id); m.id = id;
+    return m;
+  }).filter(m => m.type.trim());
+}
+const uid = () => Date.now() * 1000 + Math.floor(Math.random()*1000);
+const records = n => n + ' ' + (n % 10 === 1 && n % 100 !== 11 ? 'запись' : [2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100) ? 'записи' : 'записей');
+let motors = [];
+try{ motors = normalizeMotors(LS.get('motors', [])); }catch(e){ motors = []; }
+function saveMotors(){
+  LS.set('motors', motors);
+  LS.set('lastChange', new Date().toISOString());
+  askPersist();
+  renderBackupNote();
+}
+/* Браузер не стирає дані сайту, якщо дозволено постійне сховище (L71) */
+function askPersist(){
+  try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+}
+function renderBackupNote(){
+  const el = $('#backup-note'); if(!el) return;
+  const last = LS.get('lastExport', null), changed = LS.get('lastChange', null);
+  const days = last ? Math.floor((Date.now() - Date.parse(last)) / 864e5) : null;
+  const stale = motors.length > 0 && (!last || (changed && changed > last && days >= 7));
+  el.hidden = !stale;
+  if(stale) $('#backup-note-text').textContent = last
+    ? `Последняя резервная копия — ${days} дн. назад, после неё база менялась.`
+    : 'Резервная копия базы ещё не делалась.';
+  $('#btn-undo-import').hidden = !LS.get('motorsBeforeImport', null);
+}
 
 /* ============ мои двигатели ============ */
 const dlgMotor = $('#dlg-motor');
@@ -1197,7 +1280,7 @@ function renderMy(){
   const list = motors.filter(m => !q || JSON.stringify(m).toLowerCase().includes(q));
   $('#tbl-my tbody').innerHTML = list.map(m =>
     `<tr><td><b>${esc(m.type)}</b></td><td class="num">${esc(m.kw||'')}</td><td class="num">${esc(m.p||'')}</td><td class="num">${esc(m.z||'')}</td><td class="num">${esc(m.turns||'')}</td><td class="num">${esc(m.wire||'')}</td><td>${esc(m.scheme||'')}</td><td>${esc(m.conn||'')}</td><td style="white-space:normal;max-width:220px">${esc(m.note||'')}</td>
-    <td style="white-space:nowrap"><button class="btn sm sec" onclick="editMotor(${m.id})">✏</button> <button class="btn sm danger" onclick="delMotor(${m.id})">✕</button></td></tr>`).join('');
+    <td style="white-space:nowrap"><button class="btn sm sec" data-edit="${esc(m.id)}" aria-label="Изменить">✏</button> <button class="btn sm danger" data-del="${esc(m.id)}" aria-label="Удалить">✕</button></td></tr>`).join('');
   $('#my-empty').style.display = list.length ? 'none' : 'block';
 }
 function openMotorDlg(m){
@@ -1208,8 +1291,11 @@ function openMotorDlg(m){
   $('#dlg-motor-title').textContent = m.id ? 'Двигатель: правка' : 'Двигатель в мою базу';
   dlgMotor.showModal();
 }
-window.editMotor = id => openMotorDlg(motors.find(m => m.id === id));
-window.delMotor = id => { if(confirm('Удалить запись?')){ motors = motors.filter(m => m.id !== id); LS.set('motors', motors); renderMy(); } };
+$('#tbl-my tbody').addEventListener('click', e => {
+  const ed = e.target.closest('[data-edit]'), del = e.target.closest('[data-del]');
+  if(ed){ const m = motors.find(x => String(x.id) === ed.dataset.edit); if(m) openMotorDlg(m); }
+  if(del && confirm('Удалить запись?')){ motors = motors.filter(x => String(x.id) !== del.dataset.del); saveMotors(); renderMy(); }
+});
 window.copyToMy = t => {
   let r = AIR_WIND.find(x => x[0] === t) || AO2_WIND.find(x => x[0] === t);
   let note = 'Из справочника (ориентировочно) — проверить при разборке';
@@ -1219,6 +1305,8 @@ window.copyToMy = t => {
   goTab('ref');
 };
 $('#btn-add-motor').onclick = () => openMotorDlg({});
+/* «Отмена» — звичайна кнопка: Enter у полях відправляє форму кнопкою «Сохранить», а не скасовує */
+$('#m-cancel').onclick = () => dlgMotor.close();
 $('#form-motor').addEventListener('submit', e => {
   if(e.submitter && e.submitter.value === 'cancel') return;
   if(!$('#m-type').value.trim()){ e.preventDefault(); return; }
@@ -1227,33 +1315,60 @@ $('#form-motor').addEventListener('submit', e => {
     turns:$('#m-turns').value, wire:$('#m-wire').value, scheme:$('#m-scheme').value, conn:$('#m-conn').value, note:$('#m-note').value};
   const i = motors.findIndex(x => x.id === id);
   if(i >= 0) motors[i] = m; else motors.push(m);
-  LS.set('motors', motors); renderMy();
+  saveMotors(); renderMy();
 });
 $('#search-my').addEventListener('input', renderMy);
 
 /* ============ экспорт / импорт ============ */
-$('#btn-export').onclick = () => {
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+$('#btn-export').onclick = async () => {
   const data = {app:'namotka', version:2, exported:new Date().toISOString(), motors};
+  const name = 'namotka-backup-' + new Date().toISOString().slice(0,10) + '.json';
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  /* iPhone/iPad: через меню «Поделиться» → «Сохранить в Файлы» (завантаження blob там ненадійне, L72) */
+  if(IS_IOS && navigator.canShare){
+    const file = new File([blob], name, {type:'application/json'});
+    if(navigator.canShare({files:[file]})){
+      try{ await navigator.share({files:[file], title:'НАМОТКА — резервная копия'}); markExported(); }
+      catch(e){ if(e.name !== 'AbortError') alert('Не удалось поделиться файлом: ' + e.message); }
+      return;
+    }
+  }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'namotka-backup-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click(); URL.revokeObjectURL(a.href);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 60000); /* не відкликати, поки браузер ще зберігає файл */
+  markExported();
 };
+function markExported(){ LS.set('lastExport', new Date().toISOString()); renderBackupNote(); }
 $('#btn-import').onclick = () => $('#import-file').click();
+$('#btn-undo-import').onclick = () => {
+  const prev = LS.get('motorsBeforeImport', null);
+  if(!prev || !confirm('Вернуть базу, которая была до последнего импорта?')) return;
+  try{ motors = normalizeMotors(prev); }catch(e){ return alert('Сохранённая копия повреждена.'); }
+  try{ localStorage.removeItem('namotka.motorsBeforeImport'); }catch(e){}
+  saveMotors(); renderMy();
+};
 $('#import-file').addEventListener('change', e => {
   const f = e.target.files[0]; if(!f) return;
   const r = new FileReader();
   r.onload = () => {
     try{
       const d = JSON.parse(r.result);
-      if(d.app !== 'namotka') throw new Error('не тот файл');
-      if(!confirm(`Импортировать копию от ${d.exported ? d.exported.slice(0,10) : '?'}? Текущая база двигателей будет заменена.`)) return;
-      motors = d.motors||[];
-      LS.set('motors', motors);
+      if(!d || d.app !== 'namotka') throw new Error('это не резервная копия НАМОТКИ');
+      /* спершу перевірка й нормалізація — поточна база не змінюється, поки файл не пройшов перевірку */
+      const incoming = normalizeMotors(d.motors);
+      const when = typeof d.exported === 'string' ? d.exported.slice(0,10) : '?';
+      if(!confirm(`Импортировать копию от ${when} (${records(incoming.length)})? Текущая база будет заменена; её можно будет вернуть кнопкой «↩ Вернуть базу до импорта».`)){ e.target.value = ''; return; }
+      LS.set('motorsBeforeImport', motors);
+      motors = incoming;
+      saveMotors();
       renderMy();
-      alert('Импорт выполнен ✓');
-    }catch(err){ alert('Ошибка импорта: ' + err.message); }
+      alert(`Импорт выполнен ✓ (${records(incoming.length)})`);
+    }catch(err){ alert('Ошибка импорта: ' + err.message + '. База не изменена.'); }
     e.target.value = '';
   };
   r.readAsText(f);
@@ -1261,7 +1376,12 @@ $('#import-file').addEventListener('change', e => {
 
 /* ============ старт ============ */
 renderMy();
-if(location.hash){ const t = location.hash.slice(1); if($('#tab-'+t)) goTab(t); }
+renderBackupNote();
+/* Офлайн-режим: сайт і шрифти кешуються після першого відкриття (L73) */
+if('serviceWorker' in navigator && window.isSecureContext){
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+if(location.hash) showTab(location.hash.slice(1));
 
 </script>
 </body>
