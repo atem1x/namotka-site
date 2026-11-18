@@ -159,7 +159,10 @@ textarea{resize:vertical;min-height:64px}
 .chipbar button.active{border-color:var(--accent);color:var(--accent2);background:var(--accent-dim)}
 .wdata{background:rgba(90,167,214,.06);border:1px dashed rgba(90,167,214,.35);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:#bcd6e8}
 .low{color:var(--danger);font-weight:700}
-dialog{background:var(--card);color:var(--text);border:1px solid var(--border2);border-radius:14px;padding:22px;max-width:680px;width:calc(100% - 32px)}
+#tbl-my td{transition:background .6s}
+#tbl-my tr.flash td{background:var(--accent-dim)}
+/* margin:auto повертає центрування, яке забирає загальне скидання *{margin:0} */
+dialog{margin:auto;background:var(--card);color:var(--text);border:1px solid var(--border2);border-radius:14px;padding:22px;max-width:680px;width:calc(100% - 32px)}
 dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(3px)}
 dialog h3{color:var(--accent2);margin-bottom:6px}
 .dlg-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
@@ -236,7 +239,7 @@ footer b{color:var(--muted)}
       <p style="line-height:2">
       • Ток на 380 В: <b style="color:var(--accent2)">I ≈ 2·P(кВт)</b> А &nbsp;(точнее — в Расчётах)<br>
       • Витки при смене напряжения: <b style="color:var(--accent2)">W₂ = W₁·U₂/U₁</b><br>
-      • Рабочий конденсатор (Δ, 220 В): <b style="color:var(--accent2)">C ≈ 70 мкФ на 1 кВт</b><br>
+      • Рабочий конденсатор (Δ, 220 В): <b style="color:var(--accent2)">C ≈ 70–80 мкФ на 1 кВт</b><br>
       • Плотность тока для закрытых двигателей: <b style="color:var(--accent2)">4,5–5,5 А/мм²</b><br>
       • Обороты: 2p=2 → 3000 · 2p=4 → 1500 · 2p=6 → 1000 · 2p=8 → 750
       </p>
@@ -432,7 +435,7 @@ footer b{color:var(--muted)}
       </div>
       <button class="btn" onclick="calcCap()">Рассчитать</button>
       <div class="result" id="res-cap"></div>
-      <p class="hint">Cраб = 4800·I/U (Δ) или 2800·I/U (Y), где I — номинальный ток в выбранной схеме: для Δ — ток при 220 В (на табличке 6,1/3,5 А это 6,1 А), для Y — при 380 В. Калькулятор всегда показывает ток, принятый в расчёт. Пусковой — в 2,5–3 раза больше рабочего, включается через кнопку на 2–3 секунды. Конденсаторы — плёночные (МБГО, МБГЧ, CBB60) на напряжение не ниже 450 В.</p>
+      <p class="hint">Cраб = 4800·I/U (Δ) или 2800·I/U (Y), где I — номинальный ток в выбранной схеме: для Δ — ток при 220 В (на табличке 6,1/3,5 А это 6,1 А), для Y — при 380 В. Калькулятор всегда показывает ток, принятый в расчёт. По мощности для треугольника выдаётся диапазон — от практического правила 70 мкФ/кВт до формулы при типовом токе (как в таблице раздела «Схемы»). Пусковой — в 2,5–3 раза больше рабочего, включается через кнопку на 2–3 секунды. Конденсаторы — плёночные (МБГО, МБГЧ, CBB60) на напряжение не ниже 450 В.</p>
     </div>
 
     <div class="card">
@@ -517,7 +520,7 @@ footer b{color:var(--muted)}
           <thead><tr><th class="num">P, кВт</th><th class="num">Cраб ~мкФ (Δ, 220В)</th><th class="num">Cпуск ~мкФ</th></tr></thead>
           <tbody id="cap-table"></tbody>
         </table></div>
-        <p class="hint">Ориентир: ~70 мкФ на 1 кВт (треугольник, 220 В). Точный подбор — по нагреву и току: в разделе «Расчёты» есть калькулятор. Потеря мощности при конденсаторном включении — до 30–40%.</p>
+        <p class="hint">Треугольник, 220 В. Меньшее число — практическое правило 70 мкФ на 1 кВт, большее — формула 4800·I/U при типовом токе (КПД·cosφ ≈ 0,72); те же значения даёт калькулятор в «Расчётах» при расчёте по мощности. Начинайте с меньшего; точнее — по току с таблички, окончательно — по нагреву и току фаз. Потеря мощности при конденсаторном включении — до 30–40%.</p>
       </div>
     </div>
   </div>
@@ -546,7 +549,7 @@ footer b{color:var(--muted)}
       <div class="scheme-box" id="svg-winding" style="margin-top:14px"></div>
       <div class="legend"><span><i style="background:#e8c33c"></i>Фаза A (U)</span><span><i style="background:#58b368"></i>Фаза B (V)</span><span><i style="background:#e05c4a"></i>Фаза C (W)</span></div>
       <div id="wg-info" class="wdata" style="display:none"></div>
-      <p class="hint">Строится классическая однослойная концентрическая обмотка (при чётном q) или упрощённая равнокатушечная развёртка (при нечётном q). Пунктир — катушка, уходящая через край развёртки. Порядок соединения катушечных групп внутри фазы — «конец с концом, начало с началом» (встречное включение соседних групп).</p>
+      <p class="hint">Строится классическая однослойная концентрическая обмотка (при чётном q) или упрощённая равнокатушечная развёртка (при нечётном q). Пунктир — катушка, уходящая через край развёртки. В такой однослойной обмотке на фазу приходится p катушечных групп (по числу пар полюсов), и ток во всех группах фазы идёт в одном направлении — поэтому группы соединяются последовательно <b>«конец с началом»</b>: конец первой группы — с началом второй и т. д. Правило «конец с концом, начало с началом» относится к обмоткам, где групп в фазе столько же, сколько полюсов (двухслойные, однослойные «вразвалку»), — к этой развёртке оно не применяется.</p>
     </div>
   </div>
 </section>
@@ -803,12 +806,13 @@ function goTab(name){
 }
 window.addEventListener('hashchange', () => showTab(location.hash.slice(1) || 'home'));
 $$('#mainnav button').forEach(b => b.onclick = () => goTab(b.dataset.tab));
+function showSubtab(pillsId, subId){
+  $$('#'+pillsId+' button').forEach(x => x.classList.toggle('active', x.dataset.sub === subId));
+  const box = $('#'+pillsId).parentElement;
+  box.querySelectorAll(':scope > .subtab').forEach(s => s.classList.toggle('active', s.id === subId));
+}
 function initSubtabs(pillsId){
-  $$('#'+pillsId+' button').forEach(b => b.onclick = () => {
-    $$('#'+pillsId+' button').forEach(x => x.classList.toggle('active', x === b));
-    const box = $('#'+pillsId).parentElement;
-    box.querySelectorAll(':scope > .subtab').forEach(s => s.classList.toggle('active', s.id === b.dataset.sub));
-  });
+  $$('#'+pillsId+' button').forEach(b => b.onclick = () => showSubtab(pillsId, b.dataset.sub));
 }
 initSubtabs('ref-pills'); initSubtabs('sch-pills');
 
@@ -984,18 +988,33 @@ function calcCurrent(){
 
 const CC_LABEL = {p:'Мощность, кВт', i380:'Ток при 380 В (Y), А', i220:'Ток при 220 В (Δ), А'};
 $('#cc-mode').addEventListener('change', e => { $('#cc-val-label').textContent = CC_LABEL[e.target.value]; });
+/* Ємність за потужністю (Δ, 220 В) — одна функція для калькулятора й таблиці «Подбор ёмкости»:
+   нижня межа — практичне правило 70 мкФ/кВт, верхня — формула 4800·I/U при типовому КПД·cosφ ≈ 0,72 */
+const CAP_PER_KW = 70, CAP_ETA_COS = 0.72;
+function capRangeByPower(P){
+  const I = P*1000/(380*CAP_ETA_COS); /* струм Δ при 220 В = √3 · струм при 380 В */
+  return {I, lo: CAP_PER_KW*P, hi: 4800*I/220};
+}
 function calcCap(){
   const mode = $('#cc-mode').value, v = +$('#cc-val').value, sch = $('#cc-sch').value;
   if(!v) return showRes('#res-cap','Укажи мощность или ток.');
+  const tail = `Напряжение конденсаторов — не ниже 450 В. Окончательно ёмкость уточняется по нагреву и току фаз под нагрузкой.`;
+  if(mode==='p' && sch==='d'){
+    const r = capRangeByPower(v);
+    return showRes('#res-cap',
+      `Рабочий конденсатор: <span class="big">${fmt(r.lo,0)}–${fmt(r.hi,0)} мкФ</span><br>` +
+      `Пусковой (добавочный): <b>${fmt(r.lo*2.5,0)}–${fmt(r.hi*3,0)} мкФ</b>, включать на 2–3 с через кнопку<br>` +
+      `<span style="color:var(--muted);font-size:13px">По мощности — диапазон: ${fmt(r.lo,0)} мкФ по правилу ${CAP_PER_KW} мкФ/кВт, ${fmt(r.hi,0)} мкФ по формуле 4800·I/U при оценочном токе <b>${fmt(r.I,2)} А</b> (треугольник, 220 В). Начинайте с меньшего значения; точнее — расчёт по току с таблички. ${tail}</span>`);
+  }
   /* ток при 380 В (звезда): по мощности — оценка, по табличке — как есть или из тока при 220 В */
-  const I380 = mode==='p' ? v*1000/(1.732*380*0.72) : mode==='i380' ? v : v/1.732;
+  const I380 = mode==='p' ? v*1000/(1.732*380*CAP_ETA_COS) : mode==='i380' ? v : v/1.732;
   const k = sch==='d' ? 4800 : 2800;
   const I = sch==='d' ? I380*1.732 : I380; /* в треугольнике на 220 В ток в √3 раз больше */
   const C = k*I/220;
   showRes('#res-cap',
     `Рабочий конденсатор: <span class="big">${fmt(C,0)} мкФ</span><br>` +
     `Пусковой (добавочный): <b>${fmt(C*2.5,0)}–${fmt(C*3,0)} мкФ</b>, включать на 2–3 с через кнопку<br>` +
-    `<span style="color:var(--muted);font-size:13px">Принят в расчёт ток <b>${fmt(I,2)} А</b> (${sch==='d'?'треугольник, 220 В':'звезда, 380 В'})${mode==='p'?' — оценка по мощности':''}. Напряжение конденсаторов — не ниже 450 В. Окончательно ёмкость уточняется по нагреву и току фаз под нагрузкой.</span>`);
+    `<span style="color:var(--muted);font-size:13px">Принят в расчёт ток <b>${fmt(I,2)} А</b> (${sch==='d'?'треугольник, 220 В':'звезда, 380 В'})${mode==='p'?' — оценка по мощности':''}. ${tail}</span>`);
 }
 
 function calcRes(){
@@ -1085,8 +1104,10 @@ function svgCap(){
 /* ============ таблица конденсаторов ============ */
 function renderCapTable(){
   const ps = [0.25,0.37,0.55,0.75,1.1,1.5,2.2,3,4];
-  $('#cap-table').innerHTML = ps.map(p =>
-    `<tr><td class="num">${fmt(p)}</td><td class="num"><b>${Math.round(p*70)}</b></td><td class="num">${Math.round(p*70*2.5)}–${Math.round(p*70*3)}</td></tr>`).join('');
+  $('#cap-table').innerHTML = ps.map(p => {
+    const r = capRangeByPower(p);
+    return `<tr><td class="num">${fmt(p)}</td><td class="num"><b>${fmt(r.lo,0)}–${fmt(r.hi,0)}</b></td><td class="num">${fmt(r.lo*2.5,0)}–${fmt(r.hi*3,0)}</td></tr>`;
+  }).join('');
 }
 
 /* ============ генератор развёртки обмотки ============ */
@@ -1161,6 +1182,7 @@ function drawWinding(){
   const phaseSlots = ph => slotPhase.map((p,i)=>p===ph?i+1:null).filter(Boolean).join(', ');
   info.style.display = 'block';
   info.innerHTML = `<b>Z=${Z}, 2p=${p2}:</b> q=${q}, τ=${tau} · тип: ${even?'однослойная концентрическая':'однослойная равнокатушечная (упрощённо)'} · шаги катушек: ${spans.map(x=>`1–${x+1}`).join(' и ')} · катушек на фазу: ${Z/6}<br>` +
+    (p2 > 2 ? `Групп в фазе: ${p2/2} по ${q} кат. — соединять последовательно «конец с началом»<br>` : `Групп в фазе: 1 (${q} кат.) — межгрупповых соединений нет<br>`) +
     `Пазы фазы A: ${phaseSlots(0)}<br>Пазы фазы B: ${phaseSlots(1)}<br>Пазы фазы C: ${phaseSlots(2)}`;
 }
 
@@ -1220,8 +1242,7 @@ function renderMatrix(){
 window.openWindingFor = (z, rpm) => {
   const p2 = Math.round(6000 / rpm);
   $('#wg-z').value = z; $('#wg-p').value = p2;
-  $$('#sch-pills button').forEach(b => b.classList.toggle('active', b.dataset.sub === 'sch-wind'));
-  document.querySelectorAll('#tab-schemes > .subtab').forEach(x => x.classList.toggle('active', x.id === 'sch-wind'));
+  showSubtab('sch-pills', 'sch-wind');
   drawWinding();
   window.scrollTo({top:0});
 };
@@ -1302,7 +1323,6 @@ window.copyToMy = t => {
   if(!r && t.indexOf('4А') === 0){ r = AIR_WIND.find(x => x[0] === 'АИР' + t.slice(2)); note = 'По АИР-аналогу (ориентировочно) — проверить при разборке'; }
   if(!r) return;
   openMotorDlg({type:t, kw:r[1], p:r[2], z:r[3], turns:r[4], wire:r[5], scheme:r[6], conn:r[7], note});
-  goTab('ref');
 };
 $('#btn-add-motor').onclick = () => openMotorDlg({});
 /* «Отмена» — звичайна кнопка: Enter у полях відправляє форму кнопкою «Сохранить», а не скасовує */
@@ -1316,6 +1336,16 @@ $('#form-motor').addEventListener('submit', e => {
   const i = motors.findIndex(x => x.id === id);
   if(i >= 0) motors[i] = m; else motors.push(m);
   saveMotors(); renderMy();
+  /* Після збереження показати запис у «Мои двигатели» — і коли його скопійовано з таблиці довідника */
+  goTab('ref'); showSubtab('ref-pills', 'ref-my');
+  let btn = $(`#tbl-my [data-edit="${id}"]`);
+  if(!btn){ $('#search-my').value = ''; renderMy(); btn = $(`#tbl-my [data-edit="${id}"]`); }
+  if(btn){
+    const tr = btn.closest('tr');
+    tr.classList.add('flash');
+    setTimeout(() => tr.scrollIntoView({block:'center', behavior:'smooth'}), 80); /* після прокрутки вгору при зміні вкладки */
+    setTimeout(() => tr.classList.remove('flash'), 2500);
+  }
 });
 $('#search-my').addEventListener('input', renderMy);
 
